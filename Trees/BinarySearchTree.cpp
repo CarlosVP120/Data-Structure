@@ -28,7 +28,7 @@ private:
     void PostOrder(Node *);      // Print BST in PostOrder   // O(n)
     void LevelByLevel(Node *);   // Print BST level by level // O(n)
     void DeleteNode(int &, Node *&);
-
+    int height(Node *);
 
 public:
     BST() : Root(NULL){}; // Constructor to initialize Root to NULL, NULL is a pointer to nothing and is used to indicate that the node is empty or does not exist in the tree
@@ -50,6 +50,7 @@ public:
     void SubstituteToMin(Node *&, Node *&);                  // Substitute a node with the minimum value in the right subtree,
     void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST
     void visit(int);
+    int height() { return height(Root); }
 
     void DeleteBST(Node *&); // Delete the BST         // O(n) (worst case) or O(log n) (best case) or O(n) (average case)
 };
@@ -273,24 +274,51 @@ void BST::DeleteBST(Node *&root)
 
 void BST::visit(int value)
 {
-    if (value == 1){
+    if (value == 1)
+    {
         cout << "PreOrder: ";
         PreOrder(Root);
     }
-    else if (value == 2){
+    else if (value == 2)
+    {
         cout << "InOrder: ";
         InOrder(Root);
     }
-    else if (value == 3){
+    else if (value == 3)
+    {
         cout << "PostOrder: ";
         PostOrder(Root);
     }
-    else if (value == 4){
+    else if (value == 4)
+    {
         cout << "LevelByLevel: ";
         LevelByLevel(Root);
     }
-    else{
+    else
+    {
         cout << "Invalid option" << endl;
+    }
+}
+
+int height(Node *root)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        int leftHeight = height(root->left);
+        int rightHeight = height(root->right);
+
+        if (leftHeight > rightHeight)
+        {
+            return (leftHeight + 1);
+        }
+        else
+        {
+            return (rightHeight + 1);
+        }
     }
 }
 
@@ -305,7 +333,6 @@ int main()
     {
         A.Insert(i);
     }
-
 
     // VISIT
     int option;
@@ -332,7 +359,6 @@ int main()
 
     // cout << "\nLevelByLevel: ";
     // A.LevelByLevel();
-
 
     cout << "\nBreadth First Traversal: " << endl;
     A.BFT();
