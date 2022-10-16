@@ -256,7 +256,7 @@ int main()
     cout << "\nPostOrder: ";
     A.PostOrder();
 
-    cout << "\nBreadth First Traversal: ";
+    cout << "\nBreadth First Traversal:\n";
     A.BFT();
 
     int a = 16; // leaf node
