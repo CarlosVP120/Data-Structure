@@ -1,5 +1,6 @@
 #include <iostream>
 #include <climits>
+#include <vector>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ public:
     {
         delete[] PQ;
     }
-    void push(int, int);
+    void push(int);
     Node *pop();
     int top();
     bool empty();
@@ -36,7 +37,7 @@ public:
     void display();
 };
 
-void priority_queue::push(int value, int priority)
+void priority_queue::push(int value)
 {
     if (NumNodes == N - 1)
     {
@@ -49,7 +50,6 @@ void priority_queue::push(int value, int priority)
     // Insert the element
 
     PQ[NumNodes].value = value;
-    PQ[NumNodes].priority = priority;
 }
 
 Node *priority_queue::pop()
@@ -63,6 +63,7 @@ Node *priority_queue::pop()
     int ind = top();
 
     Node *Aux = &PQ[ind];
+    cout << "Element " << Aux->value << " removed" << endl;
 
     for (int i = ind; i < NumNodes; i++)
     {
@@ -99,13 +100,13 @@ int priority_queue::top()
 
 void priority_queue::displayIndex(int idx)
 {
-    cout << PQ[idx].value << endl
-         << endl;
+    cout << PQ[idx].value << endl;
 }
 
 void priority_queue::display()
 {
-    cout << "Elements: ";
+    cout << endl
+         << "Elements: ";
 
     for (int i = 0; i <= NumNodes; i++)
     {
@@ -134,39 +135,33 @@ int priority_queue::size()
 
 int main()
 {
-    priority_queue P(5);
+    vector<int> values = {45, 25, 33, 45, 51, 64, 75, 81, 93, 18};
+    int size = values.size();
+    priority_queue P(size);
 
-    P.push(10, 2);
-    P.push(14, 4);
-    P.push(16, 4);
-    P.push(12, 3);
+    for (int i = 0; i < size; i++)
+    {
+        P.push(values[i]);
+    }
+
+    cout << endl
+         << "Size: " << P.size();
     P.display();
 
-    int indx = P.top();
-    cout << "Higher priority element: ";
-    P.displayIndex(indx);
+    while (not P.empty())
+    {
+        int index = P.top();
+        cout << "Higher priority element: ";
+        P.displayIndex(index);
+
+        P.pop();
+        cout << endl
+             << "Size: " << P.size();
+        P.display();
+    }
 
     P.pop();
-    P.display();
-
-    int index = P.top();
-    cout << "Higher priority element: ";
-    P.displayIndex(index);
-
-    P.pop();
-    P.display();
-
-    int index_second = P.top();
-    cout << "Higher priority element: ";
-    P.displayIndex(index_second);
-
-    P.pop();
-    P.display();
-
-    P.pop();
-    P.display();
-
-    P.pop();
+    cout << endl;
 
     return 0;
 }
