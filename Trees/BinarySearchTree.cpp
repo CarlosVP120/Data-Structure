@@ -33,6 +33,8 @@ private:
     void LevelByLevel(Node *);   // Print BST level by level // O(n)
     void DeleteNode(int &, Node *&);
     int height(Node *);
+    void ancestors(Node *, int);
+    int Level(Node *, int); // O(n) // returns the level of a node in a tree 
 
 public:
     BST() : Root(NULL){}; // Constructor to initialize Root to NULL, NULL is a pointer to nothing and is used to indicate that the node is empty or does not exist in the tree
@@ -56,7 +58,9 @@ public:
     void visit(int);
     void DeleteBST(Node *&); // Delete the BST         // O(n) (worst case) or O(log n) (best case) or O(n) (average case)
     int height() { return height(Root); }
-};
+    void ancestors(int value) { ancestors(Root, value); }
+    int Level(int value) { return Level(Root, value); }
+    };
 
 void BST::Insert(int &value, Node *&root) // We use reference to avoid copying the value, if you modified the value in the function it also modified out of the function
 {
@@ -321,9 +325,64 @@ void BST::visit(int value)
     }
 }
 
+int BST::Level(Node *root, int value)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    if (root->data == value)
+    {
+        return 1;
+    }
+
+    int level = Level(root->left, value);
+
+    if (level != 0)
+    {
+        return level + 1;
+    }
+
+    level = Level(root->right, value);
+
+    if (level != 0)
+    {
+        return level + 1;
+    }
+
+    return 0;
+}
+
+
+void BST::ancestors(Node *root, int value)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root->data == value)
+    {
+        return;
+    }
+
+    if (root->data > value)
+    {
+        cout << root->data << " ";
+        ancestors(root->left, value);
+    }
+    else
+    {
+        cout << root->data << " ";
+        ancestors(root->right, value);
+    }
+}
+
+
 int main()
 {
-    system("cls");
+    system("clear");
     BST A;
 
     vector<int> v = {47, 60, 22, 12, 6, 13, 41, 20, 52, 16};
@@ -356,6 +415,24 @@ int main()
 
     A.BFT();
     cout << "The height of the BST is: " << A.height() << endl;
+    
+    // ANCESTORS
+    int value;
+    cout << "Enter the value to find the ancestors: ";
+    cin >> value;
+    cout << "The ancestors of " << value << " are: "; 
+    A.ancestors(value);
+    cout << endl;
+
+    // WHAT LEVEL AM I
+    cout << "Enter the value to find the level: ";
+    cin >> value;
+    cout << "The level of " << value << " is: " << A.Level(value) << endl;
+
+        
+
+
+
 
     a = 13; // node with one child
     A.DeleteNode(a);
