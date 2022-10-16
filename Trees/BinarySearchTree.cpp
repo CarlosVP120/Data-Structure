@@ -11,7 +11,11 @@ struct Node
     int data;           // data of the node
     Node *left, *right; // right child
 
-    Node(int d) : data(d), left(NULL), right(NULL) {} // constructor for Node class
+    Node(int d)
+    {
+        data = d;
+        left = right = NULL;
+    } // constructor for Node class
 };
 
 class BST
@@ -223,42 +227,47 @@ void BST::SubstituteToMin(Node *&root, Node *&apAux)
     }
 }
 
+// Delete a node from BST (Binary Search Tree)
 void BST::DeleteNode(int &value, Node *&root)
 {
     if (root == NULL)
     {
         cout << "The BST is empty" << endl;
+        return;
     }
 
-    if (value < root->data)
+    if (value < root->data) // if value is less than the data of the root, go to the left
     {
-        DeleteNode(value, root->left);
+        DeleteNode(value, root->left); // recursive call to delete the value in the left subtree of the root
     }
-    else if (value > root->data)
+
+    else if (value > root->data) // if value is greater than the data of the root, go to the right
     {
-        DeleteNode(value, root->right);
+        DeleteNode(value, root->right); // recursive call to delete the value in the right subtree of the root
     }
-    else
+
+    else // if value is equal to the data of the root, delete the node
     {
-        Node *apAux = root;
+        Node *apAux = root; // Auxiliar pointer to store the node to delete
 
-        if (apAux->right == NULL) // only left child node
+        if (root->left == NULL) // if the left child of the node is NULL
         {
-            root = apAux->left;
+            root = root->right; // set the pointer to the right child of the node
         }
 
-        if (apAux->left == NULL) // only right child node
+        else if (root->right == NULL) // if the right child of the node is NULL
         {
-            root = apAux->right;
-        }
-        if (apAux->left != NULL && apAux->right != NULL) // two children
-        {
-            SubstituteToMin(root->right, apAux);
+            root = root->left; // set the pointer to the left child of the node
         }
 
-        cout << "\nThe key to be deleted is: " << value << endl;
-        cout << "The node " << apAux->data << " was deleted" << endl;
-        delete apAux;
+        else // if the node has two children
+        {
+            SubstituteToMin(root->right, apAux); // substitute the node with the minimum value in the right subtree
+        }
+
+        delete apAux; // delete the node
+        cout << "\nNode to delete: " << value << endl;
+        cout << "The node " << value << " was deleted" << endl;
     }
 }
 
@@ -300,32 +309,22 @@ void BST::visit(int value)
     }
 }
 
-int height(Node *root)
+int BST::height(Node *root)
 {
     if (root == NULL)
-    {
         return 0;
-    }
     else
     {
-        int leftHeight = height(root->left);
-        int rightHeight = height(root->right);
+        int left_side = height(root->left);
+        int right_side = height(root->right);
 
-        if (leftHeight > rightHeight)
-        {
-            return (leftHeight + 1);
-        }
-        else
-        {
-            return (rightHeight + 1);
-        }
+        return max(left_side, right_side) + 1;
     }
 }
 
 int main()
 {
-    system("clear");
-
+    system("cls");
     BST A;
 
     vector<int> v = {47, 60, 22, 12, 6, 13, 41, 20, 52, 16};
@@ -333,6 +332,8 @@ int main()
     {
         A.Insert(i);
     }
+
+    cout << "height: " << A.height() << endl;
 
     // VISIT
     int option;
@@ -348,32 +349,26 @@ int main()
     A.visit(option);
     cout << endl;
 
-    // cout << "InOrder: ";
-    // A.InOrder();
-
-    // cout << "\nPreOrder: ";
-    // A.PreOrder();
-
-    // cout << "\nPostOrder: ";
-    // A.PostOrder();
-
-    // cout << "\nLevelByLevel: ";
-    // A.LevelByLevel();
-
-    cout << "\nBreadth First Traversal: " << endl;
     A.BFT();
+    // cout << "The height of the BST is: " << A.height() << endl;
 
     int a = 16; // leaf node
     A.DeleteNode(a);
+
     A.BFT();
+    cout << "The height of the BST is: " << A.height() << endl;
 
     a = 13; // node with one child
     A.DeleteNode(a);
+
     A.BFT();
+    cout << "The height of the BST is: " << A.height() << endl;
 
     a = 47; // node with two children
     A.DeleteNode(a);
+
     A.BFT();
+    cout << "The height of the BST is: " << A.height() << endl;
 
     return 0;
 }
