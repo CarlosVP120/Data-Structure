@@ -26,7 +26,9 @@ private:
     void InOrder(Node *);        // Print BST in InOrder     // O(n)
     void PreOrder(Node *);       // Print BST in PreOrder    // O(n)
     void PostOrder(Node *);      // Print BST in PostOrder   // O(n)
+    void LevelByLevel(Node *);   // Print BST level by level // O(n)
     void DeleteNode(int &, Node *&);
+
 
 public:
     BST() : Root(NULL){}; // Constructor to initialize Root to NULL, NULL is a pointer to nothing and is used to indicate that the node is empty or does not exist in the tree
@@ -42,10 +44,12 @@ public:
     void InOrder() { InOrder(Root); }                // Print BST in InOrder    // O(n)
     void PreOrder() { PreOrder(Root); }              // Print BST in PreOrder   // O(n)
     void PostOrder() { PostOrder(Root); }            // Print BST in PostOrder  // O(n)
+    void LevelByLevel() { LevelByLevel(Root); }      // Print BST level by level// O(n)
     void BFT();                                      // Print BST in Breadth First Traversal // O(n)
 
     void SubstituteToMin(Node *&, Node *&);                  // Substitute a node with the minimum value in the right subtree,
     void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST
+    void visit(int);
 
     void DeleteBST(Node *&); // Delete the BST         // O(n) (worst case) or O(log n) (best case) or O(n) (average case)
 };
@@ -81,7 +85,7 @@ void BST::Insert(int &value, Node *&root) // We use reference to avoid copying t
 // B     C                       PreOrder: A B C
 void BST::PreOrder(Node *root)
 {
-    if (root != NULL)
+    if (root == NULL)
     {
         return;
     }
@@ -95,7 +99,7 @@ void BST::PreOrder(Node *root)
 // A     C                       InOrder: A B C
 void BST::InOrder(Node *root)
 {
-    if (root != NULL)
+    if (root == NULL)
     {
         return;
     }
@@ -109,13 +113,45 @@ void BST::InOrder(Node *root)
 // A     B                       PostOrder: A B C
 void BST::PostOrder(Node *root) // print the brothers of the root first
 {
-    if (root != NULL)
+    if (root == NULL)
     {
         return;
     }
     PostOrder(root->left);
     PostOrder(root->right);
     cout << root->data << " ";
+}
+
+// The LevelByLevel function is generally a recursive function as well and moves through the leves of the tree in the following order: root, left, right
+//    A
+// B     C                       LevelByLevel: A B C
+void BST::LevelByLevel(Node *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    queue<Node *> Q; // queue to store the nodes of the tree
+    Q.push(root);    // push the root of the tree in the queue
+
+    while (!Q.empty()) // while the queue is not empty
+    {
+        Node *current = Q.front(); // get the first element of the queue
+        Q.pop();                   // remove the first element of the queue
+
+        cout << current->data << " "; // print the data of the current node
+
+        if (current->left != NULL) // if the left child of the current node is not NULL
+        {
+            Q.push(current->left); // push the left child of the current node in the queue
+        }
+
+        if (current->right != NULL) // if the right child of the current node is not NULL
+        {
+            Q.push(current->right); // push the right child of the current node in the queue
+        }
+    }
 }
 
 // The Breadth First Traversal function is generally a non-recursive function and moves through the leves of the tree in the following order: root, left, right
@@ -235,6 +271,29 @@ void BST::DeleteBST(Node *&root)
     }
 }
 
+void BST::visit(int value)
+{
+    if (value == 1){
+        cout << "PreOrder: ";
+        PreOrder(Root);
+    }
+    else if (value == 2){
+        cout << "InOrder: ";
+        InOrder(Root);
+    }
+    else if (value == 3){
+        cout << "PostOrder: ";
+        PostOrder(Root);
+    }
+    else if (value == 4){
+        cout << "LevelByLevel: ";
+        LevelByLevel(Root);
+    }
+    else{
+        cout << "Invalid option" << endl;
+    }
+}
+
 int main()
 {
     system("clear");
@@ -247,16 +306,35 @@ int main()
         A.Insert(i);
     }
 
-    cout << "InOrder: ";
-    A.InOrder();
 
-    cout << "\nPreOrder: ";
-    A.PreOrder();
+    // VISIT
+    int option;
+    cout << "Choose the way to visit the BST: " << endl;
+    cout << "1. PreOrder" << endl;
+    cout << "2. InOrder" << endl;
+    cout << "3. PostOrder" << endl;
+    cout << "4. LevelByLevel" << endl;
+    cout << "Option: ";
+    cin >> option;
+    cout << endl;
 
-    cout << "\nPostOrder: ";
-    A.PostOrder();
+    A.visit(option);
+    cout << endl;
 
-    cout << "\nBreadth First Traversal:\n";
+    // cout << "InOrder: ";
+    // A.InOrder();
+
+    // cout << "\nPreOrder: ";
+    // A.PreOrder();
+
+    // cout << "\nPostOrder: ";
+    // A.PostOrder();
+
+    // cout << "\nLevelByLevel: ";
+    // A.LevelByLevel();
+
+
+    cout << "\nBreadth First Traversal: " << endl;
     A.BFT();
 
     int a = 16; // leaf node
