@@ -26,21 +26,22 @@ private:
     // Recursive fucntions to call privately from public functions to avoid code duplication and to make the code more readable and maintainable
     // These functions are private because they are only used by the public functions and not by the user
 
-    void Insert(int &, Node *&); // Insert a node in BST     // O(log n)
-    void InOrder(Node *);        // Print BST in InOrder     // O(n)
-    void PreOrder(Node *);       // Print BST in PreOrder    // O(n)
-    void PostOrder(Node *);      // Print BST in PostOrder   // O(n)
-    void LevelByLevel(Node *);   // Print BST level by level // O(n)
-    void DeleteNode(int &, Node *&);
-    int height(Node *);
-    void ancestors(Node *, int);
-    int Level(Node *, int); // O(n) // returns the level of a node in a tree
+    void Insert(int &, Node *&);     // Insert a node in BST     // O(log n)
+    void InOrder(Node *);            // Print BST in InOrder     // O(n)
+    void PreOrder(Node *);           // Print BST in PreOrder    // O(n)
+    void PostOrder(Node *);          // Print BST in PostOrder   // O(n)
+    void LevelByLevel(Node *);       // Print BST level by level // O(n)
+    void DeleteNode(int &, Node *&); // Delete a node from BST // O(log n)
+    int height(Node *);              // Height of the tree      // O(n)
+    void ancestors(Node *, int);     // Print ancestors of a node // O(log n)
+    int Level(Node *, int);          // Returns the level of a node in a tree // O(n)
 
 public:
     BST() : Root(NULL){}; // Constructor to initialize Root to NULL, NULL is a pointer to nothing and is used to indicate that the node is empty or does not exist in the tree
 
     ~BST() // Destructor to free the memory allocated to the tree
     {
+        cout << "Deleting the tree..." << endl;
         DeleteBST(Root);
         cout << "\nDestructor: BST deleted\n";
     }
@@ -54,12 +55,12 @@ public:
     void BFT();                                      // Print BST in Breadth First Traversal // O(n)
 
     void SubstituteToMin(Node *&, Node *&);                  // Substitute a node with the minimum value in the right subtree,
-    void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST
-    void visit(int);
-    void DeleteBST(Node *&); // Delete the BST         // O(n) (worst case) or O(log n) (best case) or O(n) (average case)
-    int height() { return height(Root); }
-    void ancestors(int value) { ancestors(Root, value); }
-    int Level(int value) { return Level(Root, value); }
+    void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST // O(log n)
+    void visit(int);                                         // Select an order to print the tree // O(n)
+    void DeleteBST(Node *&);                                 // Delete the BST // O(n)
+    int height() { return height(Root); }                    // Height of the tree // O(n)
+    void ancestors(int value) { ancestors(Root, value); }    // Print ancestors of a node // O(log n)
+    int Level(int value) { return Level(Root, value); }      // Returns the level of a node in a tree // O(n)
 };
 
 void BST::Insert(int &value, Node *&root) // We use reference to avoid copying the value, if you modified the value in the function it also modified out of the function
@@ -88,16 +89,16 @@ void BST::Insert(int &value, Node *&root) // We use reference to avoid copying t
     }
 }
 
-int BST::height(Node *root)
+int BST::height(Node *root) // Compares the height of the left and right subtrees and returns the maximum height
 {
-    if (root == NULL)
+    if (root == NULL) // if the tree is empty, return 0
         return -1;
     else
     {
-        int left_side = height(root->left);
-        int right_side = height(root->right);
+        int left_side = height(root->left);   // height of the left subtree
+        int right_side = height(root->right); // height of the right subtree
 
-        return max(left_side, right_side) + 1;
+        return max(left_side, right_side) + 1; // return the maximum height + 1
     }
 }
 
@@ -134,7 +135,7 @@ void BST::InOrder(Node *root)
 // A     B                       PostOrder: A B C
 void BST::PostOrder(Node *root) // print the brothers of the root first
 {
-    if (root == NULL)
+    if (root == NULL) // if the tree is empty, end the function
     {
         return;
     }
@@ -148,7 +149,7 @@ void BST::PostOrder(Node *root) // print the brothers of the root first
 // B     C                       LevelByLevel: A B C
 void BST::LevelByLevel(Node *root)
 {
-    if (root == NULL)
+    if (root == NULL) // if the tree is empty, end the function
     {
         return;
     }
@@ -289,64 +290,66 @@ void BST::DeleteNode(int &value, Node *&root)
 
 void BST::DeleteBST(Node *&root)
 {
-    if (root != NULL)
+    if (root != NULL) // if the tree is not empty
     {
-        DeleteBST(root->left);
-        DeleteBST(root->right);
-        delete root;
+        cout << "Deleting " << root->data << endl;
+        DeleteBST(root->left);  // delete the left subtree
+        DeleteBST(root->right); // delete the right subtree
+        delete root;            // delete the root
+        root = NULL;            // set the root to NULL
     }
 }
 
-void BST::visit(int value)
+void BST::visit(int value) // Decide the way you want to order the tree
 {
     if (value == 1)
     {
-        cout << "PreOrder: ";
+        cout << "PreOrder: "; // print the data of the root first
         PreOrder(Root);
     }
     else if (value == 2)
     {
-        cout << "InOrder: ";
+        cout << "InOrder: "; // print the data of the root in the middle
         InOrder(Root);
     }
     else if (value == 3)
     {
-        cout << "PostOrder: ";
+        cout << "PostOrder: "; // print the data of the root last
         PostOrder(Root);
     }
     else if (value == 4)
     {
-        cout << "LevelByLevel: ";
+        cout << "LevelByLevel: "; // print the data of the root in the same level
         LevelByLevel(Root);
     }
     else
     {
-        cout << "Invalid option" << endl;
+        cout << "Invalid option" << endl; // if the option is invalid, print an error message
     }
 }
 
-int BST::Level(Node *root, int value)
+int BST::Level(Node *root, int value) // return the level of a node
 {
     if (root == NULL)
     {
         return 0;
     }
 
-    if (root->data == value)
+    if (root->data == value) // if the data of the root is equal to the value, return 1
     {
         return 1;
     }
 
-    int level = Level(root->left, value);
+    int level = Level(root->left, value); // get the level of the left subtree
 
-    if (level != 0)
+    if (level != 0) // if the level is not 0, return the level + 1
     {
         return level + 1;
     }
 
-    level = Level(root->right, value);
+    level = Level(root->right, value); // get the level of the right subtree
 
-    if (level != 0)
+    if (level != 0) // if the level is not 0, return the level + 1
     {
         return level + 1;
     }
@@ -354,27 +357,28 @@ int BST::Level(Node *root, int value)
     return 0;
 }
 
-void BST::ancestors(Node *root, int value)
+void BST::ancestors(Node *root, int value) // print the ancestors of a node
 {
     if (root == NULL)
     {
         return;
     }
 
-    if (root->data == value)
+    if (root->data == value) // if the data of the root is equal to the value, return
     {
         return;
     }
 
-    if (root->data > value)
+    if (root->data > value) // if the data of the root is greater than the value, go to the left
     {
-        cout << root->data << " ";
-        ancestors(root->left, value);
+        cout << root->data << " ";    // print the data of the root
+        ancestors(root->left, value); // recursive call to print the ancestors of the left subtree of the root
     }
-    else
+
+    else if (root->data < value) // if the data of the root is less than the value, go to the right
     {
-        cout << root->data << " ";
-        ancestors(root->right, value);
+        cout << root->data << " ";     // print the data of the root
+        ancestors(root->right, value); // recursive call to print the ancestors of the right subtree of the root
     }
 }
 
@@ -400,41 +404,41 @@ int main()
     cout << endl;
 
     A.visit(option);
-    cout << endl;
-
-    A.BFT();
-    cout << "The height of the BST is: " << A.height() << endl;
-
-    int a = 16; // leaf node
-    A.DeleteNode(a);
+    cout << endl
+         << endl;
 
     A.BFT();
     cout << "The height of the BST is: " << A.height() << endl;
 
     // ANCESTORS
     int value;
-    cout << "Enter the value to find the ancestors: ";
+    cout << endl
+         << "Enter the value to find the ancestors: ";
     cin >> value;
     cout << "The ancestors of " << value << " are: ";
     A.ancestors(value);
     cout << endl;
 
     // WHAT LEVEL AM I
-    cout << "Enter the value to find the level: ";
+    cout << endl
+         << "Enter the value to find the level: ";
     cin >> value;
     cout << "The level of " << value << " is: " << A.Level(value) << endl;
 
-    a = 13; // node with one child
-    A.DeleteNode(a);
+    // DELETE NODE
+    vector<int> toDelete = {16, 13, 47, 20};
+    int a;
 
-    A.BFT();
-    cout << "The height of the BST is: " << A.height() << endl;
+    for (int i = 0; i < toDelete.size(); i++)
+    {
+        a = toDelete[i]; // leaf node
+        A.DeleteNode(a);
+        cout << endl;
 
-    a = 47; // node with two children
-    A.DeleteNode(a);
-
-    A.BFT();
-    cout << "The height of the BST is: " << A.height() << endl;
+        A.BFT();
+        cout << "The height of the BST is: " << A.height() << endl;
+    }
+    cout << endl;
 
     return 0;
 }
