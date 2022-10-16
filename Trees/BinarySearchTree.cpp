@@ -155,6 +155,7 @@ void BST::BFT()
             Aux = Q.front(); // get the first element of the queue
         }
         Q.pop(); // pop the first element of the queue
+
         cout << endl;
     }
 }
@@ -170,7 +171,7 @@ void BST::SubstituteToMin(Node *&root, Node *&apAux)
 {
     if (root->left != NULL)
     {
-        SubstituteToMin(root, apAux);
+        SubstituteToMin(root->left, apAux);
     }
     else
     {
@@ -218,7 +219,7 @@ void BST::DeleteNode(int &value, Node *&root)
             SubstituteToMin(root->right, apAux);
         }
 
-        cout << "\n The key to be deleted is: " << value << endl;
+        cout << "\nThe key to be deleted is: " << value << endl;
         cout << "The node " << apAux->data << " was deleted" << endl;
         delete apAux;
     }
@@ -236,7 +237,7 @@ void BST::DeleteBST(Node *&root)
 
 int main()
 {
-    system("cls");
+    system("clear");
 
     BST A;
 
@@ -266,7 +267,7 @@ int main()
     A.DeleteNode(a);
     A.BFT();
 
-    a = 10; // node with two children
+    a = 47; // node with two children
     A.DeleteNode(a);
     A.BFT();
 
