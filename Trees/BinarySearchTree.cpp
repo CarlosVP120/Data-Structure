@@ -34,7 +34,7 @@ private:
     void DeleteNode(int &, Node *&);
     int height(Node *);
     void ancestors(Node *, int);
-    int Level(Node *, int); // O(n) // returns the level of a node in a tree 
+    int Level(Node *, int); // O(n) // returns the level of a node in a tree
 
 public:
     BST() : Root(NULL){}; // Constructor to initialize Root to NULL, NULL is a pointer to nothing and is used to indicate that the node is empty or does not exist in the tree
@@ -60,7 +60,7 @@ public:
     int height() { return height(Root); }
     void ancestors(int value) { ancestors(Root, value); }
     int Level(int value) { return Level(Root, value); }
-    };
+};
 
 void BST::Insert(int &value, Node *&root) // We use reference to avoid copying the value, if you modified the value in the function it also modified out of the function
 {
@@ -354,7 +354,6 @@ int BST::Level(Node *root, int value)
     return 0;
 }
 
-
 void BST::ancestors(Node *root, int value)
 {
     if (root == NULL)
@@ -379,10 +378,8 @@ void BST::ancestors(Node *root, int value)
     }
 }
 
-
 int main()
 {
-    system("clear");
     BST A;
 
     vector<int> v = {47, 60, 22, 12, 6, 13, 41, 20, 52, 16};
@@ -390,8 +387,6 @@ int main()
     {
         A.Insert(i);
     }
-
-    cout << "height: " << A.height() << endl;
 
     // VISIT
     int option;
@@ -408,19 +403,19 @@ int main()
     cout << endl;
 
     A.BFT();
-    // cout << "The height of the BST is: " << A.height() << endl;
+    cout << "The height of the BST is: " << A.height() << endl;
 
     int a = 16; // leaf node
     A.DeleteNode(a);
 
     A.BFT();
     cout << "The height of the BST is: " << A.height() << endl;
-    
+
     // ANCESTORS
     int value;
     cout << "Enter the value to find the ancestors: ";
     cin >> value;
-    cout << "The ancestors of " << value << " are: "; 
+    cout << "The ancestors of " << value << " are: ";
     A.ancestors(value);
     cout << endl;
 
@@ -428,11 +423,6 @@ int main()
     cout << "Enter the value to find the level: ";
     cin >> value;
     cout << "The level of " << value << " is: " << A.Level(value) << endl;
-
-        
-
-
-
 
     a = 13; // node with one child
     A.DeleteNode(a);
