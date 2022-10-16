@@ -54,9 +54,8 @@ public:
     void SubstituteToMin(Node *&, Node *&);                  // Substitute a node with the minimum value in the right subtree,
     void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST
     void visit(int);
-    int height() { return height(Root); }
-
     void DeleteBST(Node *&); // Delete the BST         // O(n) (worst case) or O(log n) (best case) or O(n) (average case)
+    int height() { return height(Root); }
 };
 
 void BST::Insert(int &value, Node *&root) // We use reference to avoid copying the value, if you modified the value in the function it also modified out of the function
@@ -82,6 +81,19 @@ void BST::Insert(int &value, Node *&root) // We use reference to avoid copying t
         {
             cout << "Repeated element\n";
         }
+    }
+}
+
+int BST::height(Node *root)
+{
+    if (root == NULL)
+        return -1;
+    else
+    {
+        int left_side = height(root->left);
+        int right_side = height(root->right);
+
+        return max(left_side, right_side) + 1;
     }
 }
 
@@ -306,19 +318,6 @@ void BST::visit(int value)
     else
     {
         cout << "Invalid option" << endl;
-    }
-}
-
-int BST::height(Node *root)
-{
-    if (root == NULL)
-        return 0;
-    else
-    {
-        int left_side = height(root->left);
-        int right_side = height(root->right);
-
-        return max(left_side, right_side) + 1;
     }
 }
 
