@@ -91,7 +91,7 @@ void BST::Insert(int &value, Node *&root)
 
 /*1. We first check to see if the current node is NULL or not. If it is NULL, we return -1. If it is not NULL, we continue on to step 2.
 2. We get the height of the left side of the tree by calling the height method on the left child of the current node. We then do the same thing for the right side of the tree by calling the height method on the right child of the current node.
-3. We then return the maximum of the height of the left and right side of the tree, plus 1. The plus 1 is to account for the current node.
+3. We then return the maximum of the height of the left and right side of the tree, plus 1. The plus 1 is to account for the current node.*/
 
 int BST::height(Node *root)
 {
