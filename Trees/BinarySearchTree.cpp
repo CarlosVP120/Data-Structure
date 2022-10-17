@@ -3,58 +3,53 @@
 
 using namespace std;
 
-// A binary search tree is a binary tree in wich every node fits a specific ordering property
-// all left descendents <= n < all right
+// Carlos Alberto Veryan Peña A01641147
 
 struct Node
 {
-    int data;           // data of the node
-    Node *left, *right; // right child
+    int data;
+    Node *left, *right;
 
     Node(int d)
     {
         data = d;
         left = right = NULL;
-    } // constructor for Node class
+    }
 };
 
 class BST
 {
 private:
-    Node *Root; // root of the tree is the first element of the tree
+    Node *Root;
 
-    // Recursive fucntions to call privately from public functions to avoid code duplication and to make the code more readable and maintainable
-    // These functions are private because they are only used by the public functions and not by the user
-
-    void Insert(int &, Node *&);     // Insert a node in BST     // O(log n)
-    void InOrder(Node *);            // Print BST in InOrder     // O(n)
-    void PreOrder(Node *);           // Print BST in PreOrder    // O(n)
-    void PostOrder(Node *);          // Print BST in PostOrder   // O(n)
-    void LevelByLevel(Node *);       // Print BST level by level // O(n)
-    void DeleteNode(int &, Node *&); // Delete a node from BST // O(log n)
-    int height(Node *);              // Height of the tree      // O(n)
-    void ancestors(Node *, int);     // Print ancestors of a node // O(log n)
-    int Level(Node *, int);          // Returns the level of a node in a tree // O(n)
+    void Insert(int &, Node *&);     // O(log n)
+    void InOrder(Node *);            // O(n)
+    void PreOrder(Node *);           // O(n)
+    void PostOrder(Node *);          // O(n)
+    void LevelByLevel(Node *);       // O(n)
+    void DeleteNode(int &, Node *&); // O(log n)
+    int height(Node *);              // O(n)
+    void ancestors(Node *, int);     // O(log n)
+    int Level(Node *, int);          // O(n)
 
 public:
-    BST() : Root(NULL){}; // Constructor to initialize Root to NULL, NULL is a pointer to nothing and is used to indicate that the node is empty or does not exist in the tree
+    BST() : Root(NULL){};
 
-    ~BST() // Destructor to free the memory allocated to the tree
+    ~BST()
     {
         cout << "Deleting the tree..." << endl;
         DeleteBST(Root);
         cout << "\nDestructor: BST deleted\n";
     }
 
-    // Functions to call the recursive functions (non-recursive)
-    void Insert(int &value) { Insert(value, Root); } // Insert a node in BST    // O(log n)
-    void InOrder() { InOrder(Root); }                // Print BST in InOrder    // O(n)
-    void PreOrder() { PreOrder(Root); }              // Print BST in PreOrder   // O(n)
-    void PostOrder() { PostOrder(Root); }            // Print BST in PostOrder  // O(n)
-    void LevelByLevel() { LevelByLevel(Root); }      // Print BST level by level// O(n)
-    void BFT();                                      // Print BST in Breadth First Traversal // O(n)
+    void Insert(int &value) { Insert(value, Root); } // Insert a node in the BST O(log n)
+    void InOrder() { InOrder(Root); }                // Display the BST in InOrder O(n)
+    void PreOrder() { PreOrder(Root); }              // Display the BST in PreOrder O(n)
+    void PostOrder() { PostOrder(Root); }            // Display the BST in PostOrder O(n)
+    void LevelByLevel() { LevelByLevel(Root); }      // Display the BST in LevelByLevel O(n)
+    void BFT();                                      // Display the BST in LevelByLevel O(n)
 
-    void SubstituteToMin(Node *&, Node *&);                  // Substitute a node with the minimum value in the right subtree,
+    void SubstituteToMin(Node *&, Node *&);                  // Substitute a node with the minimum value in the right subtree. O(log n)
     void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST // O(log n)
     void visit(int);                                         // Select an order to print the tree // O(n)
     void DeleteBST(Node *&);                                 // Delete the BST // O(n)
@@ -63,7 +58,12 @@ public:
     int Level(int value) { return Level(Root, value); }      // Returns the level of a node in a tree // O(n)
 };
 
-void BST::Insert(int &value, Node *&root) // We use reference to avoid copying the value, if you modified the value in the function it also modified out of the function
+/*1. First of all, we check if the root is NULL. If it is, we create a new node with the value we want to insert.
+2. If the root is not NULL, we check if the value we want to insert is less than the value of the root. If it is, we call Insert() again, passing the value we want to insert and the root->left as parameters.
+3. If the value we want to insert is greater than the value of the root, we call Insert() again, passing the value we want to insert and the root->right as parameters.
+4. If the value we want to insert is equal to the value of the root, we print on the screen "Repeated element".*/
+
+void BST::Insert(int &value, Node *&root)
 {
     if (root == NULL)
     {
@@ -72,39 +72,45 @@ void BST::Insert(int &value, Node *&root) // We use reference to avoid copying t
 
     else
     {
-        if (value < root->data) // if value is less than the data of the root, go to the left
+        if (value < root->data)
         {
-            Insert(value, root->left); // recursive call to insert the value in the left subtree of the root
+            Insert(value, root->left);
         }
 
-        else if (value > root->data) // if value is greater than the data of the root, go to the right
+        else if (value > root->data)
         {
-            Insert(value, root->right); // recursive call to insert the value in the right subtree of the root
+            Insert(value, root->right);
         }
 
-        else // if value is equal to the data of the root, do nothing
+        else
         {
             cout << "Repeated element\n";
         }
     }
 }
 
-int BST::height(Node *root) // Compares the height of the left and right subtrees and returns the maximum height
+/*1. We first check to see if the current node is NULL or not. If it is NULL, we return -1. If it is not NULL, we continue on to step 2.
+2. We get the height of the left side of the tree by calling the height method on the left child of the current node. We then do the same thing for the right side of the tree by calling the height method on the right child of the current node.
+3. We then return the maximum of the height of the left and right side of the tree, plus 1. The plus 1 is to account for the current node.
+
+int BST::height(Node *root)
 {
-    if (root == NULL) // if the tree is empty, return 0
+    if (root == NULL)
         return -1;
     else
     {
-        int left_side = height(root->left);   // height of the left subtree
-        int right_side = height(root->right); // height of the right subtree
+        int left_side = height(root->left);
+        int right_side = height(root->right);
 
-        return max(left_side, right_side) + 1; // return the maximum height + 1
+        return max(left_side, right_side) + 1;
     }
 }
 
-// The PreOrder function is generally a recursive function as well and moves through the leves of the tree in the following order: root, left, right
-//    A
-// B     C                       PreOrder: A B C
+/* 1. If the root is NULL, then there is nothing to print, so return.
+ 2. Print the data at the root.
+ 3. Recursively call PreOrder on the left subtree.
+ 4. Recursively call PreOrder on the right subtree. */
+
 void BST::PreOrder(Node *root)
 {
     if (root == NULL)
@@ -116,9 +122,11 @@ void BST::PreOrder(Node *root)
     PreOrder(root->right);
 }
 
-// The InOrder function is generally a recursive function as well and moves through the leves of the tree in the following order: left, root, right
-//    B
-// A     C                       InOrder: A B C
+/* 1. If the root of the tree is NULL, then we return from the function.
+ 2. We call the InOrder function recursively for the left subtree.
+ 3. We print the data of the root node.
+ 4. We call the InOrder function recursively for the right subtree.*/
+
 void BST::InOrder(Node *root)
 {
     if (root == NULL)
@@ -130,12 +138,16 @@ void BST::InOrder(Node *root)
     InOrder(root->right);
 }
 
-// The PostOrder function is generally a recursive function as well and moves through the leves of the tree in the following order: left, right, root
-//    C
-// A     B                       PostOrder: A B C
-void BST::PostOrder(Node *root) // print the brothers of the root first
+/* Here is the explanation for the code above:
+1. The function is called PostOrder and it takes a Node pointer as a parameter, which represents the root of the tree. The function does not return anything.
+2. The function checks if the root is NULL, if so, it returns to the caller.
+3. The function calls itself with the left child of the root as the parameter, this will print the left subtree in postorder.
+4. The function calls itself with the right child of the root as the parameter, this will print the right subtree in postorder.
+5. The function prints the data stored in the root node. */
+
+void BST::PostOrder(Node *root)
 {
-    if (root == NULL) // if the tree is empty, end the function
+    if (root == NULL)
     {
         return;
     }
@@ -144,39 +156,52 @@ void BST::PostOrder(Node *root) // print the brothers of the root first
     cout << root->data << " ";
 }
 
-// The LevelByLevel function is generally a recursive function as well and moves through the leves of the tree in the following order: root, left, right
-//    A
-// B     C                       LevelByLevel: A B C
+/* 1. The function starts with the declaration of a queue of Node pointers named Q.  Q is a queue of Nodes, and each Node pointer will point to the address of a Node in the binary search tree.
+2.  If the root is NULL, the function returns.  Otherwise, the root is pushed onto the queue.
+3.  The while loop checks if the queue is empty.  If the queue is not empty, the node at the front of the queue is stored in a Node pointer named current.  The front of the queue is then popped.
+4.  The data stored in the node to which current points is printed.
+5.  If the left child of the node to which current points is not NULL, the left child is pushed onto the queue.
+6.  If the right child of the node to which current points is not NULL, the right child is pushed onto the queue.
+7.  This process continues until the queue is empty. */
+
 void BST::LevelByLevel(Node *root)
 {
-    if (root == NULL) // if the tree is empty, end the function
+    if (root == NULL)
     {
         return;
     }
 
-    queue<Node *> Q; // queue to store the nodes of the tree
-    Q.push(root);    // push the root of the tree in the queue
+    queue<Node *> Q;
+    Q.push(root);
 
-    while (!Q.empty()) // while the queue is not empty
+    while (!Q.empty())
     {
-        Node *current = Q.front(); // get the first element of the queue
-        Q.pop();                   // remove the first element of the queue
+        Node *current = Q.front();
+        Q.pop();
 
-        cout << current->data << " "; // print the data of the current node
+        cout << current->data << " ";
 
-        if (current->left != NULL) // if the left child of the current node is not NULL
+        if (current->left != NULL)
         {
-            Q.push(current->left); // push the left child of the current node in the queue
+            Q.push(current->left);
         }
 
-        if (current->right != NULL) // if the right child of the current node is not NULL
+        if (current->right != NULL)
         {
-            Q.push(current->right); // push the right child of the current node in the queue
+            Q.push(current->right);
         }
     }
 }
 
-// The Breadth First Traversal function is generally a non-recursive function and moves through the leves of the tree in the following order: root, left, right
+/*1. The first step is to check if the tree is empty. If it is, then we return from the function. If not, we move to the next step.
+2. Then we will create the queue Q and push the root of the tree into it.
+3. Then we will create a pointer called Aux that will hold the nodes from the queue. We will use a while loop to traverse through the queue. The loop will continue until the queue is empty. (Remember that we are using a queue to implement the BFS algorithm.)
+4. Inside the while loop, we will push NULL into the queue. This is to mark the end of each level.
+5. We will assign the front of the queue to Aux. Then we will use another while loop to traverse through the nodes in the queue. The loop will continue until we reach the NULL which we pushed in the previous step.
+6. Inside the while loop, we will print the value of the node pointed by Aux. Then, we will check if the left child of Aux exists. If it does, we will push it into the queue. We will do the same for the right child.
+7. Then we will pop the node from the queue and assign the front of the queue to Aux.
+8. The outer while loop will continue until the queue is empty. */
+
 void BST::BFT()
 {
     if (Root == NULL)
@@ -185,46 +210,46 @@ void BST::BFT()
         return;
     }
 
-    queue<Node *> Q; // queue to store the nodes of the tree
-    Q.push(Root);    // push the root of the tree in the queue
+    queue<Node *> Q;
+    Q.push(Root);
 
-    Node *Aux; // Auxiliar pointer to store the nodes of the tree
+    Node *Aux;
     while (!Q.empty())
     {
         Q.push(NULL);
 
-        Aux = Q.front(); // get the first element of the queue
+        Aux = Q.front();
 
         while (Aux != NULL)
         {
-            cout << Aux->data << " "; // print the data of the node
+            cout << Aux->data << " ";
 
-            if (Aux->left != NULL) // if the left child of the node is not NULL, push it in the queue
+            if (Aux->left != NULL)
             {
                 Q.push(Aux->left);
             }
 
-            if (Aux->right != NULL) // if the right child of the node is not NULL, push it in the queue
+            if (Aux->right != NULL)
             {
                 Q.push(Aux->right);
             }
 
-            Q.pop();         // pop the first element of the queue
-            Aux = Q.front(); // get the first element of the queue
+            Q.pop();
+            Aux = Q.front();
         }
-        Q.pop(); // pop the first element of the queue
+        Q.pop();
 
         cout << endl;
     }
 }
 
-// Delete a node from BST (Binary Search Tree)
-// There are 3 cases to delete a node from BST:
-// 1. The node is a leaf (has no children) -> delete the node and set the pointer to NULL
-// 2. The node has one child -> delete the node and set the pointer to the child of the node
-// 3. The node has two children (we substitute the node with the minimum value in the right subtree)
+/* 1. We are using a pointer to a pointer (Node *&root) to be able to modify the root of the tree.
+2. We are using a pointer to a pointer (Node *&apAux) to be able to modify the node we want to substitute.
+3. We are using a pointer to a pointer (root->left) because we are modifying the left node of the root.
+4. We are using a pointer to a pointer (root->right) because we are modifying the right node of the root.
+5. We are using a pointer to a pointer (apAux->data) to be able to modify the data of the node we want to substitute.
+6. We are using a pointer to a pointer (apAux) to be able to modify the node we want to substitute. */
 
-// Substitute a node with the minimum value in the right subtree
 void BST::SubstituteToMin(Node *&root, Node *&apAux)
 {
     if (root->left != NULL)
@@ -233,18 +258,22 @@ void BST::SubstituteToMin(Node *&root, Node *&apAux)
     }
     else
     {
-        // Transfer the data from the substitute node
         apAux->data = root->data;
 
-        // Save the minValue-right subtree (To delete)
         apAux = root;
 
-        // Swap place minValue-right subtree with right subtree
         root = root->right;
     }
 }
 
-// Delete a node from BST (Binary Search Tree)
+/* 1. If the root is NULL, it means that the BST is empty.
+2. If the value is less than the value of the root, it means that the value to delete is in the left subtree.
+3. If the value is greater than the value of the root, it means that the value to delete is in the right subtree.
+4. If the value is equal to the value of the root, we found the node to delete.
+5. If the root has only one child, the root will be replaced with the child.
+6. If the root has two children, we will replace the root with the minimum value of the right subtree.
+7. If the root has no children, we will delete the root. */
+
 void BST::DeleteNode(int &value, Node *&root)
 {
     if (root == NULL)
@@ -253,103 +282,120 @@ void BST::DeleteNode(int &value, Node *&root)
         return;
     }
 
-    if (value < root->data) // if value is less than the data of the root, go to the left
+    if (value < root->data)
     {
-        DeleteNode(value, root->left); // recursive call to delete the value in the left subtree of the root
+        DeleteNode(value, root->left);
     }
 
-    else if (value > root->data) // if value is greater than the data of the root, go to the right
+    else if (value > root->data)
     {
-        DeleteNode(value, root->right); // recursive call to delete the value in the right subtree of the root
+        DeleteNode(value, root->right);
     }
 
-    else // if value is equal to the data of the root, delete the node
+    else
     {
-        Node *apAux = root; // Auxiliar pointer to store the node to delete
+        Node *apAux = root;
 
-        if (root->left == NULL) // if the left child of the node is NULL
+        if (root->left == NULL)
         {
-            root = root->right; // set the pointer to the right child of the node
+            root = root->right;
         }
 
-        else if (root->right == NULL) // if the right child of the node is NULL
+        else if (root->right == NULL)
         {
-            root = root->left; // set the pointer to the left child of the node
+            root = root->left;
         }
 
-        else // if the node has two children
+        else
         {
-            SubstituteToMin(root->right, apAux); // substitute the node with the minimum value in the right subtree
+            SubstituteToMin(root->right, apAux);
         }
 
-        delete apAux; // delete the node
+        delete apAux;
         cout << "\nNode to delete: " << value << endl;
         cout << "The node " << value << " was deleted" << endl;
     }
 }
 
+/* 1. If the root is not NULL, then delete the left subtree, the right subtree, and the root.
+2. Set the root to NULL. */
+
 void BST::DeleteBST(Node *&root)
 {
-    if (root != NULL) // if the tree is not empty
+    if (root != NULL)
     {
         cout << "Deleting " << root->data << endl;
-        DeleteBST(root->left);  // delete the left subtree
-        DeleteBST(root->right); // delete the right subtree
-        delete root;            // delete the root
-        root = NULL;            // set the root to NULL
+        DeleteBST(root->left);
+        DeleteBST(root->right);
+        delete root;
+        root = NULL;
     }
 }
 
-void BST::visit(int value) // Decide the way you want to order the tree
+/* 1. The visit function is the only function that is not private, the reason for this is because it is the main function that the user will be calling.
+2. The visit function takes in 1 parameter, which is the option the user would like to see.
+3. If the option is 1, then the PreOrder function is called.
+4. If the option is 2, then the InOrder function is called.
+5. If the option is 3, then the PostOrder function is called.
+6. If the option is 4, then the LevelByLevel function is called.
+7. If the option is not 1, 2, 3, or 4, then the option is invalid and the user is informed.*/
+
+void BST::visit(int value)
 {
     if (value == 1)
     {
-        cout << "PreOrder: "; // print the data of the root first
+        cout << "PreOrder: ";
         PreOrder(Root);
     }
     else if (value == 2)
     {
-        cout << "InOrder: "; // print the data of the root in the middle
+        cout << "InOrder: ";
         InOrder(Root);
     }
     else if (value == 3)
     {
-        cout << "PostOrder: "; // print the data of the root last
+        cout << "PostOrder: ";
         PostOrder(Root);
     }
     else if (value == 4)
     {
-        cout << "LevelByLevel: "; // print the data of the root in the same level
+        cout << "LevelByLevel: ";
         LevelByLevel(Root);
     }
     else
     {
-        cout << "Invalid option" << endl; // if the option is invalid, print an error message
+        cout << "Invalid option" << endl;
     }
 }
 
-int BST::Level(Node *root, int value) // return the level of a node
+/*1. If the root is NULL, then the value is not present in the tree and return 0.
+2. If the root's data is equal to the value, then return 1.
+3. Check the left subtree for the value, if it is found, then return the level + 1.
+4. Check the right subtree for the value, if it is found, then return the level + 1.
+5. If the value is not found in the tree, then return 0. */
+
+int BST::Level(Node *root, int value)
 {
     if (root == NULL)
     {
         return 0;
     }
 
-    if (root->data == value) // if the data of the root is equal to the value, return 1
+    if (root->data == value)
     {
         return 1;
     }
 
-    int level = Level(root->left, value); // get the level of the left subtree
+    int level = Level(root->left, value);
 
-    if (level != 0) // if the level is not 0, return the level + 1
+    if (level != 0)
     {
         return level + 1;
     }
 
-    level = Level(root->right, value); // get the level of the right subtree
+    level = Level(root->right, value);
 
-    if (level != 0) // if the level is not 0, return the level + 1
+    if (level != 0)
     {
         return level + 1;
     }
@@ -357,39 +403,43 @@ int BST::Level(Node *root, int value) // return the level of a node
     return 0;
 }
 
-void BST::ancestors(Node *root, int value) // print the ancestors of a node
+/* 1. If the tree is empty or the value is equal to the root's data, we return because we have reached our destination.
+2. If the value is less than the root's data, we print the root's data and call the function recursively for the left subtree.
+3. If the value is greater than the root's data, we print the root's data and call the function recursively for the right subtree. */
+
+void BST::ancestors(Node *root, int value)
 {
     if (root == NULL)
     {
         return;
     }
 
-    if (root->data == value) // if the data of the root is equal to the value, return
+    if (root->data == value)
     {
         return;
     }
 
-    if (root->data > value) // if the data of the root is greater than the value, go to the left
+    if (root->data > value)
     {
-        cout << root->data << " ";    // print the data of the root
-        ancestors(root->left, value); // recursive call to print the ancestors of the left subtree of the root
+        cout << root->data << " ";
+        ancestors(root->left, value);
     }
 
-    else if (root->data < value) // if the data of the root is less than the value, go to the right
+    else if (root->data < value)
     {
-        cout << root->data << " ";     // print the data of the root
-        ancestors(root->right, value); // recursive call to print the ancestors of the right subtree of the root
+        cout << root->data << " ";
+        ancestors(root->right, value);
     }
 }
 
 int main()
 {
-    BST A;
+    BST Tree;
 
     vector<int> v = {47, 60, 22, 12, 6, 13, 41, 20, 52, 16};
     for (int i : v)
     {
-        A.Insert(i);
+        Tree.Insert(i);
     }
 
     // VISIT
@@ -403,12 +453,12 @@ int main()
     cin >> option;
     cout << endl;
 
-    A.visit(option);
+    Tree.visit(option);
     cout << endl
          << endl;
 
-    A.BFT();
-    cout << "The height of the BST is: " << A.height() << endl;
+    Tree.BFT();
+    cout << "The height of the BST is: " << Tree.height() << endl;
 
     // ANCESTORS
     int value;
@@ -416,14 +466,14 @@ int main()
          << "Enter the value to find the ancestors: ";
     cin >> value;
     cout << "The ancestors of " << value << " are: ";
-    A.ancestors(value);
+    Tree.ancestors(value);
     cout << endl;
 
-    // WHAT LEVEL AM I
+    // LEVEL
     cout << endl
          << "Enter the value to find the level: ";
     cin >> value;
-    cout << "The level of " << value << " is: " << A.Level(value) << endl;
+    cout << "The level of " << value << " is: " << Tree.Level(value) << endl;
 
     // DELETE NODE
     vector<int> toDelete = {16, 13, 47, 20};
@@ -431,12 +481,12 @@ int main()
 
     for (int i = 0; i < toDelete.size(); i++)
     {
-        a = toDelete[i]; // leaf node
-        A.DeleteNode(a);
+        a = toDelete[i];
+        Tree.DeleteNode(a);
         cout << endl;
 
-        A.BFT();
-        cout << "The height of the BST is: " << A.height() << endl;
+        Tree.BFT();
+        cout << "The height of the BST is: " << Tree.height() << endl;
     }
     cout << endl;
 
