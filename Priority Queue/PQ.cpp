@@ -109,17 +109,18 @@ void priority_queue::display() // Display the value and priority of all nodes in
     cout << endl
          << "Elements: ";
 
-    for (int i = 0; i <= NumNodes; i++)
+    for (int i = 0; i <= NumNodes; i++) // Iterate trough all the nodes
     {
         cout << PQ[i].value << " ";
     }
+
     cout << endl
          << endl;
 }
 
 bool priority_queue::empty() // Check if de PQ is empty
 {
-    if (NumNodes == -1)
+    if (NumNodes == -1) // Check if the priority queue is empty
     {
         return true;
     }
@@ -131,7 +132,7 @@ bool priority_queue::empty() // Check if de PQ is empty
 
 int priority_queue::size() // Return the size of the PQ
 {
-    return NumNodes + 1;
+    return NumNodes + 1; // Return the size
 }
 
 int main()
