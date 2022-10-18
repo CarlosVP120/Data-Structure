@@ -31,7 +31,7 @@ public:
     {
         delete[] PQ;
     }
-    void push(int); // Insert a node in the priority queue O(logN)
+    void push(int, int); // Insert a node in the priority queue O(logN)
     Node *pop();    // Delete a node from the priority queue O(logN)
     int top();      // Return the value of the node with highest priority O(1)
     bool empty();   // Check if the priority queue is empty O(1)
@@ -41,7 +41,7 @@ public:
     void display();         // Display the value and priority of all nodes in the priority queue O(N)
 };
 
-void priority_queue::push(int value) // Insert a node in the priority queue O(logN)
+void priority_queue::push(int value, int priority) // Insert a node in the priority queue O(logN)
 {
     if (NumNodes == N - 1)
     {
@@ -53,6 +53,7 @@ void priority_queue::push(int value) // Insert a node in the priority queue O(lo
 
     // Insert the element
     PQ[NumNodes].value = value;
+    PQ[NumNodes].priority = priority;
 }
 
 Node *priority_queue::pop() // Delete a node from the priority queue O(logN)
@@ -66,7 +67,8 @@ Node *priority_queue::pop() // Delete a node from the priority queue O(logN)
     int ind = top(); // Get the index of the node with highest priority
 
     Node *Aux = &PQ[ind];                                   // Create a pointer to the node with highest priority
-    cout << "Element " << Aux->value << " removed" << endl; // Display the value of the node with highest priority
+    cout << "Element " << Aux->value << " with priority " << Aux->priority << " deleted" << endl; // Display the node that is going to be deleted
+    
 
     for (int i = ind; i < NumNodes; i++) // Shift all the nodes to the left
     {
@@ -140,14 +142,17 @@ int priority_queue::size() // Return the size of the PQ
 int main()
 {
     // Create a priority queue
-    vector<int> values = {45, 25, 33, 45, 51, 64, 75, 81, 93, 18};
+    // vector<int> values = {45, 25, 33, 45, 51, 64, 75, 81, 93, 18};
+    // vector<int> priorities = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    vector<int> values = {10, 14, 16, 12};
+    vector<int> priorities = {2,4,4,3};
     int size = values.size();
     priority_queue P(size);
 
     // Insert the elements
     for (int i = 0; i < size; i++)
     {
-        P.push(values[i]);
+        P.push(values[i], priorities[i]);
     }
 
     cout << endl

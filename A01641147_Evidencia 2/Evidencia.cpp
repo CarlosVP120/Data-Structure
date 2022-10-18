@@ -28,7 +28,8 @@ long ipToInt(string ip) { //O(n)
             iPstr += ip[i];
         }
     }
-    return stol(iPstr);
+    // cout << stoll(iPstr) << endl;
+    return stoll(iPstr);
 }
 
 string getIP(string line) { //O(n)
