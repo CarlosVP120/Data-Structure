@@ -5,26 +5,33 @@
 using namespace std;
 
 // Carlos Alberto Veryan Peña
-// Diego Partida Romero 
+// Diego Partida Romero
 
-int monthToInt(string month) { //O(n)
+int monthToInt(string month)
+{ // O(n)
     vector<string> months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-    for (int i = 0; i < months.size(); i++) { 
-        if (month == months[i]) {
+    for (int i = 0; i < months.size(); i++)
+    {
+        if (month == months[i])
+        {
             return i + 1;
         }
     }
     return 0;
-
 }
 
-long ipToInt(string ip) { //O(n)
+long long ipToInt(string ip)
+{ // O(n)
     string iPstr = "";
-    for (int i = 0; i < ip.length(); i++) {
-        if (ip[i] == '.') {
+    for (int i = 0; i < ip.length(); i++)
+    {
+        if (ip[i] == '.')
+        {
             // Do nothing
-        } else {
+        }
+        else
+        {
             iPstr += ip[i];
         }
     }
@@ -32,42 +39,58 @@ long ipToInt(string ip) { //O(n)
     return stoll(iPstr);
 }
 
-string getIP(string line) { //O(n)
+string getIP(string line)
+{ // O(n)
     string ip = "";
     string finalIP = "";
-    for (int i = 16; i < line.length(); i++) { //O(n)
-        if (line[i] == ':') {
+    for (int i = 16; i < line.length(); i++)
+    { // O(n)
+        if (line[i] == ':')
+        {
             break;
         }
         ip += line[i];
     }
 
-    //Divide the IP in 4 strings
+    // Divide the IP in 4 strings
     string ip1 = "";
     string ip2 = "";
     string ip3 = "";
     string ip4 = "";
     int count = 0;
-    for (int i = 0; i < ip.length(); i++) { //O(n)
-        if (ip[i] == '.') {
+    for (int i = 0; i < ip.length(); i++)
+    { // O(n)
+        if (ip[i] == '.')
+        {
             count++;
-        } else {
-            if (count == 0) {
+        }
+        else
+        {
+            if (count == 0)
+            {
                 ip1 += ip[i];
-            } else if (count == 1) {
+            }
+            else if (count == 1)
+            {
                 ip2 += ip[i];
-            } else if (count == 2) {
+            }
+            else if (count == 2)
+            {
                 ip3 += ip[i];
-            } else if (count == 3) {
+            }
+            else if (count == 3)
+            {
                 ip4 += ip[i];
             }
         }
     }
 
     vector<string> iPs = {ip1, ip2, ip3, ip4};
-    //add zeros so that each part has 3 values
-    for (int i = 0; i < iPs.size(); i++) { 
-        while (iPs[i].length() < 3) {
+    // add zeros so that each part has 3 values
+    for (int i = 0; i < iPs.size(); i++)
+    {
+        while (iPs[i].length() < 3)
+        {
             iPs[i] = "0" + iPs[i];
         }
     }
@@ -75,7 +98,8 @@ string getIP(string line) { //O(n)
     return iPs[0] + "." + iPs[1] + "." + iPs[2] + "." + iPs[3];
 }
 
-string normalizeIP(string ip_toNormalize) { //O(n)
+string normalizeIP(string ip_toNormalize)
+{ // O(n)
     string ip_toNormalize1 = "";
     string ip_toNormalize2 = "";
     string ip_toNormalize3 = "";
@@ -121,24 +145,36 @@ string normalizeIP(string ip_toNormalize) { //O(n)
     return ip_toNormalizes[0] + "." + ip_toNormalizes[1] + "." + ip_toNormalizes[2] + "." + ip_toNormalizes[3];
 }
 
-vector<string> merge(vector<string> left, vector<string> right) { //O(n)
+vector<string> merge(vector<string> left, vector<string> right)
+{ // O(n)
     vector<string> result;
-    while (left.size() > 0 || right.size() > 0) {
-        if (left.size() > 0 && right.size() > 0) {
-            if (ipToInt(getIP(left.front())) <= ipToInt(getIP(right.front()))) {
+    while (left.size() > 0 || right.size() > 0)
+    {
+        if (left.size() > 0 && right.size() > 0)
+        {
+            if (ipToInt(getIP(left.front())) <= ipToInt(getIP(right.front())))
+            {
                 result.push_back(left.front());
                 left.erase(left.begin());
-            } else {
+            }
+            else
+            {
                 result.push_back(right.front());
                 right.erase(right.begin());
             }
-        } else if (left.size() > 0) {
-            for (int i = 0; i < left.size(); i++) {
+        }
+        else if (left.size() > 0)
+        {
+            for (int i = 0; i < left.size(); i++)
+            {
                 result.push_back(left[i]);
             }
             break;
-        } else if (right.size() > 0) {
-            for (int i = 0; i < right.size(); i++) {
+        }
+        else if (right.size() > 0)
+        {
+            for (int i = 0; i < right.size(); i++)
+            {
                 result.push_back(right[i]);
             }
             break;
@@ -147,16 +183,20 @@ vector<string> merge(vector<string> left, vector<string> right) { //O(n)
     return result;
 }
 
-vector<string> mergeSort(vector<string> array) { //O(n)
-    if (array.size() == 1) {
+vector<string> mergeSort(vector<string> array)
+{ // O(n)
+    if (array.size() == 1)
+    {
         return array;
     }
     vector<string> left;
     vector<string> right;
-    for (int i = 0; i < array.size() / 2; i++) {
+    for (int i = 0; i < array.size() / 2; i++)
+    {
         left.push_back(array[i]);
     }
-    for (int i = array.size() / 2; i < array.size(); i++) {
+    for (int i = array.size() / 2; i < array.size(); i++)
+    {
         right.push_back(array[i]);
     }
     left = mergeSort(left);
@@ -164,30 +204,33 @@ vector<string> mergeSort(vector<string> array) { //O(n)
     return merge(left, right);
 }
 
-int main() {
-    
+int main()
+{
+
     // Save all the lines in a vector
     ifstream file("Bitacora.txt");
     string line;
     vector<string> lines;
-    while (getline(file, line)) {
+    while (getline(file, line))
+    {
         lines.push_back(line);
     }
     file.close();
 
     // Add a zero if the day is only one digit
-    for (int i = 0; i < lines.size(); i++) {
-        if (lines[i][4] >= '0' && lines[i][4] <= '9' && lines[i][5] == ' ') {
+    for (int i = 0; i < lines.size(); i++)
+    {
+        if (lines[i][4] >= '0' && lines[i][4] <= '9' && lines[i][5] == ' ')
+        {
             lines[i].insert(4, "0");
         }
-
     }
 
     vector<string> sortedLines;
 
     // Sort the lines with merge sort
     sortedLines = mergeSort(lines);
-    
+
     // Save the sorted lines in a new file
     ofstream newFile1("Sorted.txt");
     for (int i = 0; i < sortedLines.size(); i++)
@@ -205,7 +248,7 @@ int main() {
     cout << "Enter the end IP: ";
     cin >> endIP;
     endIP = normalizeIP(endIP);
-    
+
     cout << endl;
 
     // Save the lines that are between the start and end IP in a new file
