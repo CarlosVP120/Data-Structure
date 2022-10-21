@@ -32,6 +32,16 @@ class AVL{
             inorderUtil(root);
             cout<<endl;
         }
+
+        void levelOrder(){
+            int h = height(root);
+            for(int i=1;i<=h;i++){
+                printLevel(root, i);
+                cout<<endl;
+            }
+        }
+
+
     private:
         int height(node * head){
             if(head==NULL) return 0;
@@ -137,20 +147,32 @@ class AVL{
             if(k > x) return searchUtil(head->left, x);
             if(k < x) return searchUtil(head->right, x);
         }
+
+        void printLevel(node * head, int level){ // this function is used to print the tree in level order
+            if(head==NULL) return;
+            if(level==1){
+                cout<<head->key<<" ";
+            }else{
+                printLevel(head->left, level-1);
+                printLevel(head->right, level-1);
+            }
+        }
 };
 
 int main(){
     AVL<float> t;
-    t.insert(1.3);
-    t.insert(2.4);
-    t.insert(3.5);
-    t.insert(4.6);
-    t.insert(5.7);
-    t.insert(6.8);
-    t.insert(7.9);
+    t.insert(24);
+    t.insert(13);
+    t.insert(35);
+    t.insert(46);
+    t.insert(57);
+    t.insert(68);
+    t.insert(79);
     t.inorder();
-    t.remove(5.7);
-    t.remove(6.8);
-    t.remove(7.9);
+    t.remove(57);
+    t.remove(68);
+    t.remove(79);
     t.inorder();
+    cout << endl;
+    t.levelOrder();
 }
