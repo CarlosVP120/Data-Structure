@@ -107,7 +107,7 @@ string intToIP(long long ip)
     int count = 0;
     for (int i = 0; i < iPstr.length(); i++)
     { // O(n)
-        if (count == 3)
+        if (count == 2)
         {
             finalIP += iPstr[i];
             finalIP += ".";
@@ -143,7 +143,7 @@ void BST::countRepeated(Node *node)
     // Return the 5 most repeated values
     if (node->count > 1)
     {
-        cout << intToIP(node->data) << " " << node->count << endl;
+        cout << "IP: " << intToIP(node->data) << " Number of accesses: " << node->count << endl;
     }
 }
 
