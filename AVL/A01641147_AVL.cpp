@@ -183,15 +183,26 @@ int main(){
     for (int i = 0; i < v.size(); i++)
     {
         tree.insert(v[i]);
+        cout << "Inserted " << v[i] << endl;
     }
     
     // Print the tree
     cout << endl << "Size of the tree: " << tree.size() << endl;
     tree.print();
+
+    // Print the tree in level order
+    cout << endl;
+    tree.levelOrder();
+    cout << endl;
+
     // Remove nodes from the tree
-    tree.remove(57);
-    tree.remove(68);
-    tree.remove(79);
+    vector<int> nodesToDelete = {45, 78, 90, 1};
+    for (int i = 0; i < nodesToDelete.size(); i++)
+    {
+        tree.remove(nodesToDelete[i]);
+        cout << "Removed " << nodesToDelete[i] << endl;
+    }
+
     // Print the tree
     cout << endl << "Size of the tree: " << tree.size() << endl;
     tree.print();
