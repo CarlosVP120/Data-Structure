@@ -11,7 +11,8 @@ struct Node
 {
     long long data;
     Node *left, *right;
-
+    int count = 1;
+    
     Node(long long d)
     {
         data = d;
@@ -60,11 +61,6 @@ public:
     int Level(int value) { return Level(Root, value); }      // Returns the level of a node in a tree // O(n)
 };
 
-/*1. First of all, we check if the root is NULL. If it is, we create a new node with the value we want to insert.
-2. If the root is not NULL, we check if the value we want to insert is less than the value of the root. If it is, we call Insert() again, passing the value we want to insert and the root->left as parameters.
-3. If the value we want to insert is greater than the value of the root, we call Insert() again, passing the value we want to insert and the root->right as parameters.
-4. If the value we want to insert is equal to the value of the root, we print on the screen "Repeated element".*/
-
 void BST::Insert(long long &value, Node *&root)
 {
     if (root == NULL)
@@ -86,7 +82,7 @@ void BST::Insert(long long &value, Node *&root)
 
         else
         {
-            cout << "Repeated element\n";
+            root->count++;
         }
     }
 }
@@ -137,6 +133,7 @@ void BST::InOrder(Node *root, ofstream &file)
         return;
     }
     InOrder(root->left, file);
+    // file << root->count <<endl;
     file << root->data << endl;
     InOrder(root->right, file);
 }
@@ -509,8 +506,9 @@ int main()
     file.close();
 
     // Save the tree in a file
-    ofstream file2("Tree.txt");
+    ofstream file2("OrderedTree.txt");
     Tree.InOrder(file2);
+    file2.close();
 
     return 0;
 }
