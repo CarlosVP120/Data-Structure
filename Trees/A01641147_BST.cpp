@@ -9,10 +9,10 @@ using namespace std;
 
 struct Node
 {
-    int data;
+    long long data;
     Node *left, *right;
 
-    Node(int d)
+    Node(long long d)
     {
         data = d;
         left = right = NULL;
@@ -43,8 +43,8 @@ public:
         DeleteBST(Root);
         cout << "\nDestructor: BST deleted\n";
     }
-
-    void Insert(long long &value) { Insert(value, Root); } // Insert a node in the BST O(log n)
+    // insert long long
+    void Insert(long long &value) {Insert(value, Root); } // Insert a node in the BST O(log n)
     void InOrder() { InOrder(Root); }                // Display the BST in InOrder O(n)
     void PreOrder() { PreOrder(Root); }              // Display the BST in PreOrder O(n)
     void PostOrder() { PostOrder(Root); }            // Display the BST in PostOrder O(n)
@@ -515,9 +515,6 @@ int main()
 {
     BST Tree;
 
-    //Inserting nodes
-    Tree.Insert(1);
-
     // Save all the lines in a vector
     ifstream file("Bitacora.txt");
     string line;
@@ -528,8 +525,18 @@ int main()
         {
             line.insert(4, "0");
         }
+        lines.push_back(line);
     }
     file.close();
+
+    // Save the IPs in the tree
+    for (int i = 0; i < lines.size(); i++)
+    {
+        string ip = getIP(lines[i]);
+        long long ipInt = ipToInt(ip);
+        cout << ipInt << endl;
+        Tree.Insert(ipInt);
+    }
 
     //print the lines
     for (int i = 0; i < lines.size(); i++)
