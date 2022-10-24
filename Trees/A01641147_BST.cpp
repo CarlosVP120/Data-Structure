@@ -12,7 +12,7 @@ struct Node
     long long data;
     Node *left, *right;
     int count = 1;
-    
+
     Node(long long d)
     {
         data = d;
@@ -25,16 +25,18 @@ class BST
 private:
     Node *Root;
 
-    void Insert(long long &, Node *&);     // O(log n)
-    void InOrder(Node *, ofstream &);            // O(n)
-    void PreOrder(Node *);           // O(n)
-    void PostOrder(Node *);          // O(n)
-    void LevelByLevel(Node *);       // O(n)
-    void DeleteNode(int &, Node *&); // O(log n)
-    int height(Node *);              // O(n)
-    void ancestors(Node *, int);     // O(log n)
-    int Level(Node *, int);     // O(log n) 
+    void Insert(long long &, Node *&); // O(log n)
+    void InOrder(Node *, ofstream &);  // O(n)
+    void PreOrder(Node *);             // O(n)
+    void PostOrder(Node *);            // O(n)
+    void LevelByLevel(Node *);         // O(n)
+    void DeleteNode(int &, Node *&);   // O(log n)
+    int height(Node *);                // O(n)
+    void ancestors(Node *, int);       // O(log n)
+    int Level(Node *, int);            // O(log n)
+    void CheckBST(Node *);             // O(n)
 
+    void countRepeated(Node *); // O(n)
 public:
     BST() : Root(NULL){};
 
@@ -45,21 +47,82 @@ public:
         cout << "\nDestructor: BST deleted\n";
     }
     // insert long long
-    void Insert(long long &value) {Insert(value, Root); } // Insert a node in the BST O(log n)
-    void InOrder(ofstream &out) { InOrder(Root, out); }   // InOrder traversal O(n)
-    void PreOrder() { PreOrder(Root); }              // Display the BST in PreOrder O(n)
-    void PostOrder() { PostOrder(Root); }            // Display the BST in PostOrder O(n)
-    void LevelByLevel() { LevelByLevel(Root); }      // Display the BST in LevelByLevel O(n)
-    void BFT();                                      // Display the BST in LevelByLevel O(n)
+    void Insert(long long &value)
+    {
+        Insert(value, Root);
+    } // Insert a node in the BST O(log n)
+    void InOrder(ofstream &out)
+    {
+        InOrder(Root, out);
+    } // InOrder traversal O(n)
+    void PreOrder()
+    {
+        PreOrder(Root);
+    } // Display the BST in PreOrder O(n)
+    void PostOrder()
+    {
+        PostOrder(Root);
+    } // Display the BST in PostOrder O(n)
+    void LevelByLevel()
+    {
+        LevelByLevel(Root);
+    }           // Display the BST in LevelByLevel O(n)
+    void BFT(); // Display the BST in LevelByLevel O(n)
 
-    void SubstituteToMin(Node *&, Node *&);                  // Substitute a node with the minimum value in the right subtree. O(log n)
-    void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST // O(log n)
-    void visit(int);                                         // Select an order to print the tree // O(n)
-    void DeleteBST(Node *&);                                 // Delete the BST // O(n)
-    int height() { return height(Root); }                    // Height of the tree // O(n)
-    void ancestors(int value) { ancestors(Root, value); }    // Print ancestors of a node // O(log n)
-    int Level(int value) { return Level(Root, value); }      // Returns the level of a node in a tree // O(n)
+    void SubstituteToMin(Node *&, Node *&); // Substitute a node with the minimum value in the right subtree. O(log n)
+    void DeleteNode(int &value)
+    {
+        DeleteNode(value, Root);
+    }                        // Delete a node from BST // O(log n)
+    void visit(int);         // Select an order to print the tree // O(n)
+    void DeleteBST(Node *&); // Delete the BST // O(n)
+    int height()
+    {
+        return height(Root);
+    } // Height of the tree // O(n)
+    void ancestors(int value)
+    {
+        ancestors(Root, value);
+    } // Print ancestors of a node // O(log n)
+    int Level(int value)
+    {
+        return Level(Root, value);
+    } // Returns the level of a node in a tree // O(n)
+
+    void CheckBST()
+    {
+        CheckBST(Root);
+    } // Check if the tree is a BST // O(n)
+
+    void countRepeated()
+    {
+        countRepeated(Root);
+    } // Count repeated values // O(n)
 };
+
+void BST::countRepeated(Node *node)
+{
+    if (node == NULL)
+        return;
+
+    countRepeated(node->left);
+    countRepeated(node->right);
+
+    if (node->left != NULL && node->left->data == node->data)
+    {
+        node->count += node->left->count;
+    }
+    if (node->right != NULL && node->right->data == node->data)
+    {
+        node->count += node->right->count;
+    }
+
+    // Return the 5 most repeated values
+    if (node->count > 1)
+    {
+        cout << node->data << " " << node->count << endl;
+    }
+}
 
 void BST::Insert(long long &value, Node *&root)
 {
@@ -155,8 +218,6 @@ void BST::PostOrder(Node *root)
     PostOrder(root->right);
     cout << root->data << " ";
 }
-
-
 
 /* 1. The function starts with the declaration of a queue of Node pointers named Q.  Q is a queue of Nodes, and each Node pointer will point to the address of a Node in the binary search tree.
 2.  If the root is NULL, the function returns.  Otherwise, the root is pushed onto the queue.
@@ -334,20 +395,23 @@ void BST::DeleteBST(Node *&root)
     }
 }
 
-/* 1. The visit function is the only function that is not private, the reason for this is because it is the main function that the user will be calling.
-2. The visit function takes in 1 parameter, which is the option the user would like to see.
-3. If the option is 1, then the PreOrder function is called.
-4. If the option is 2, then the InOrder function is called.
-5. If the option is 3, then the PostOrder function is called.
-6. If the option is 4, then the LevelByLevel function is called.
-7. If the option is not 1, 2, 3, or 4, then the option is invalid and the user is informed.*/
+// Check the BST and find repeated values and return the 5 most repeated values
 
+void BST::CheckBST(Node *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
 
-/*1. If the root is NULL, then the value is not present in the tree and return 0.
-2. If the root's data is equal to the value, then return 1.
-3. Check the left subtree for the value, if it is found, then return the level + 1.
-4. Check the right subtree for the value, if it is found, then return the level + 1.
-5. If the value is not found in the tree, then return 0. */
+    CheckBST(root->left);
+    CheckBST(root->right);
+
+    if (root->data == root->left->data)
+    {
+        cout << root->data << " ";
+    }
+}
 
 int BST::Level(Node *root, int value)
 {
@@ -406,8 +470,6 @@ void BST::ancestors(Node *root, int value)
         ancestors(root->right, value);
     }
 }
-
-
 
 long long ipToInt(string ip)
 { // O(n)
@@ -508,7 +570,10 @@ int main()
     // Save the tree in a file
     ofstream file2("OrderedTree.txt");
     Tree.InOrder(file2);
+
     file2.close();
+
+    Tree.countRepeated();
 
     return 0;
 }
