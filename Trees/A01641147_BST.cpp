@@ -100,6 +100,29 @@ public:
     } // Count repeated values // O(n)
 };
 
+string intToIP(long long ip)
+{ // O(n)
+    string iPstr = to_string(ip);
+    string finalIP = "";
+    int count = 0;
+    for (int i = 0; i < iPstr.length(); i++)
+    { // O(n)
+        if (count == 3)
+        {
+            finalIP += iPstr[i];
+            finalIP += ".";
+            count = 0;
+        }
+        else
+        {
+            finalIP += iPstr[i];
+            count++;
+        }
+    }
+    finalIP.pop_back();
+    return finalIP;
+}
+
 void BST::countRepeated(Node *node)
 {
     if (node == NULL)
@@ -120,7 +143,7 @@ void BST::countRepeated(Node *node)
     // Return the 5 most repeated values
     if (node->count > 1)
     {
-        cout << node->data << " " << node->count << endl;
+        cout << intToIP(node->data) << " " << node->count << endl;
     }
 }
 
