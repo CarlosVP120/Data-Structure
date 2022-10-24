@@ -1,39 +1,44 @@
 #include<iostream>
+#include<vector>
 using namespace std;
 
-template <typename T>
+// Carlos ALberto Veryan Peña A01641147
+
+template <typename T> // T is the type of data stored in the tree
 class AVL{
     public:
-        class node{
+        class node{ // Node of the tree
             public:
                 T key;
                 int height;
                 node * left;
                 node * right;
-                node(T k){
+                node(T k){ // Constructor
                     height = 1;
                     key = k;
                     left = NULL;
                     right = NULL;
                 }
         };
-        node * root = NULL;
-        int n;
-        void insert(T x){
+        node * root = NULL; // Root of the tree
+        int n; // Number of nodes in the tree
+        void insert(T x){ // Insert a node with key x O(log n)
             root=insertUtil(root, x);
         }
-        void remove(T x){
+        void remove(T x){ // Remove a node with key x O(log n)
             root=removeUtil(root, x);
         }
-        node * search(T x){
-            return searchUtil(root,x);
+
+        bool search(T x){ // Search for a node with key x O(log n)
+            return searchUtil(root, x);
         }
-        void inorder(){
+
+        void print(){ // Print the tree in order O(n)
             inorderUtil(root);
             cout<<endl;
         }
 
-        void levelOrder(){
+        void levelOrder(){ // Print the tree in level order O(n)
             int h = height(root);
             for(int i=1;i<=h;i++){
                 printLevel(root, i);
@@ -41,13 +46,31 @@ class AVL{
             }
         }
 
+        int size(){ // Return the number of nodes in the tree O(1)
+            return getSize(root);
+        }
+
 
     private:
-        int height(node * head){
+
+        bool searchUtil(node * r, T x){ // Search for a node with key x O(log n)
+            if(r==NULL) return false;
+            if(r->key==x) return true;
+            if(r->key>x) return searchUtil(r->left, x);
+            return searchUtil(r->right, x);
+        }
+
+        int getSize(node * n){ // Get the size of the tree O(1)
+            if(n==NULL) return 0;
+            return getSize(n->left)+getSize(n->right)+1;
+        }
+
+        int height(node * head){ // Return the height of the tree O(1)
             if(head==NULL) return 0;
             return head->height;
         }
-        node * rightRotation(node * head){
+
+        node * rightRotation(node * head){ // Right rotation O(1)
             node * newhead = head->left;
             head->left = newhead->right;
             newhead->right = head;
@@ -56,7 +79,7 @@ class AVL{
             return newhead;
         }
 
-        node * leftRotation(node * head){
+        node * leftRotation(node * head){ // Left rotation O(1)
             node * newhead = head->right;
             head->right = newhead->left;
             newhead->left = head;
@@ -65,14 +88,14 @@ class AVL{
             return newhead;
         }
 
-        void inorderUtil(node * head){ // this function is used to print the tree in inorder
+        void inorderUtil(node * head){ // Print the tree in inorder O(n)
             if(head==NULL) return ;
             inorderUtil(head->left);
             cout<<head->key<<" ";
             inorderUtil(head->right);
         }
 
-        node * insertUtil(node * head, T x){ // this function is used to insert a node in the tree
+        node * insertUtil(node * head, T x){ // Insert a node in the tree O(log n)
             if(head==NULL){
                 n+=1;
                 node * temp = new node(x);
@@ -99,8 +122,8 @@ class AVL{
             }
             return head;
         }
-        node * removeUtil(node * head, T x){ // this function is used to remove a node from the tree
-            if(head==NULL) return NULL;
+        node * removeUtil(node * head, T x){ // Remove a node from the tree O(log n)
+            if(head==NULL) return NULL; 
             if(x < head->key){
                 head->left = removeUtil(head->left, x);
             }else if(x > head->key){
@@ -140,15 +163,8 @@ class AVL{
             }
             return head;
         }
-        node * searchUtil(node * head, T x){ // this function is used to search a node in the tree
-            if(head == NULL) return NULL;
-            T k = head->key;
-            if(k == x) return head;
-            if(k > x) return searchUtil(head->left, x);
-            if(k < x) return searchUtil(head->right, x);
-        }
 
-        void printLevel(node * head, int level){ // this function is used to print the tree in level order
+        void printLevel(node * head, int level){ // Print the tree in level order O(n)
             if(head==NULL) return;
             if(level==1){
                 cout<<head->key<<" ";
@@ -160,19 +176,32 @@ class AVL{
 };
 
 int main(){
-    AVL<float> t;
-    t.insert(24);
-    t.insert(13);
-    t.insert(35);
-    t.insert(46);
-    t.insert(57);
-    t.insert(68);
-    t.insert(79);
-    t.inorder();
-    t.remove(57);
-    t.remove(68);
-    t.remove(79);
-    t.inorder();
+    AVL<int> tree;
+    // Insert 10 random numbers
+    vector<int> v = {23,56,12,34,67,89,45,78,90,1};
+
+    for (int i = 0; i < v.size(); i++)
+    {
+        tree.insert(v[i]);
+    }
+    
+    // Print the tree
+    cout << endl << "Size of the tree: " << tree.size() << endl;
+    tree.print();
+    // Remove nodes from the tree
+    tree.remove(57);
+    tree.remove(68);
+    tree.remove(79);
+    // Print the tree
+    cout << endl << "Size of the tree: " << tree.size() << endl;
+    tree.print();
+
+    // Print the tree in level order
     cout << endl;
-    t.levelOrder();
+    tree.levelOrder();
+
+    // Search for a node
+    int nodeToSearch = 67;
+    cout << endl << "Is node " << nodeToSearch << " present in the tree? " << tree.search(nodeToSearch) << endl;
+
 }
