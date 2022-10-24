@@ -1,5 +1,7 @@
 #include <iostream>
 #include <queue>
+#include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -22,7 +24,7 @@ class BST
 private:
     Node *Root;
 
-    void Insert(int &, Node *&);     // O(log n)
+    void Insert(long long &, Node *&);     // O(log n)
     void InOrder(Node *);            // O(n)
     void PreOrder(Node *);           // O(n)
     void PostOrder(Node *);          // O(n)
@@ -42,7 +44,7 @@ public:
         cout << "\nDestructor: BST deleted\n";
     }
 
-    void Insert(int &value) { Insert(value, Root); } // Insert a node in the BST O(log n)
+    void Insert(long long &value) { Insert(value, Root); } // Insert a node in the BST O(log n)
     void InOrder() { InOrder(Root); }                // Display the BST in InOrder O(n)
     void PreOrder() { PreOrder(Root); }              // Display the BST in PreOrder O(n)
     void PostOrder() { PostOrder(Root); }            // Display the BST in PostOrder O(n)
@@ -63,7 +65,7 @@ public:
 3. If the value we want to insert is greater than the value of the root, we call Insert() again, passing the value we want to insert and the root->right as parameters.
 4. If the value we want to insert is equal to the value of the root, we print on the screen "Repeated element".*/
 
-void BST::Insert(int &value, Node *&root)
+void BST::Insert(long long &value, Node *&root)
 {
     if (root == NULL)
     {
@@ -432,63 +434,108 @@ void BST::ancestors(Node *root, int value)
     }
 }
 
+long long ipToInt(string ip)
+{ // O(n)
+    string iPstr = "";
+    for (int i = 0; i < ip.length(); i++)
+    {
+        if (ip[i] == '.')
+        {
+            // Do nothing
+        }
+        else
+        {
+            iPstr += ip[i];
+        }
+    }
+    // cout << stoll(iPstr) << endl;
+    return stoll(iPstr);
+}
+
+string getIP(string line)
+{ // O(n)
+    string ip = "";
+    string finalIP = "";
+    for (int i = 16; i < line.length(); i++)
+    { // O(n)
+        if (line[i] == ':')
+        {
+            break;
+        }
+        ip += line[i];
+    }
+
+    // Divide the IP in 4 strings
+    string ip1 = "";
+    string ip2 = "";
+    string ip3 = "";
+    string ip4 = "";
+    int count = 0;
+    for (int i = 0; i < ip.length(); i++)
+    { // O(n)
+        if (ip[i] == '.')
+        {
+            count++;
+        }
+        else
+        {
+            if (count == 0)
+            {
+                ip1 += ip[i];
+            }
+            else if (count == 1)
+            {
+                ip2 += ip[i];
+            }
+            else if (count == 2)
+            {
+                ip3 += ip[i];
+            }
+            else if (count == 3)
+            {
+                ip4 += ip[i];
+            }
+        }
+    }
+
+    vector<string> iPs = {ip1, ip2, ip3, ip4};
+    // add zeros so that each part has 3 values
+    for (int i = 0; i < iPs.size(); i++)
+    {
+        while (iPs[i].length() < 3)
+        {
+            iPs[i] = "0" + iPs[i];
+        }
+    }
+
+    return iPs[0] + "." + iPs[1] + "." + iPs[2] + "." + iPs[3];
+}
+
 int main()
 {
     BST Tree;
 
-    vector<int> v = {47, 60, 22, 12, 6, 13, 41, 20, 52, 16};
-    for (int i : v)
+    //Inserting nodes
+    Tree.Insert(1);
+
+    // Save all the lines in a vector
+    ifstream file("Bitacora.txt");
+    string line;
+    vector<string> lines;
+    while (getline(file, line))
     {
-        Tree.Insert(i);
+        if (line[4] >= '0' && line[4] <= '9' && line[5] == ' ')
+        {
+            line.insert(4, "0");
+        }
     }
+    file.close();
 
-    // VISIT
-    int option;
-    cout << "Choose the way to visit the BST: " << endl;
-    cout << "1. PreOrder" << endl;
-    cout << "2. InOrder" << endl;
-    cout << "3. PostOrder" << endl;
-    cout << "4. LevelByLevel" << endl;
-    cout << "Option: ";
-    cin >> option;
-    cout << endl;
-
-    Tree.visit(option);
-    cout << endl
-         << endl;
-
-    Tree.BFT();
-    cout << "The height of the BST is: " << Tree.height() << endl;
-
-    // ANCESTORS
-    int value;
-    cout << endl
-         << "Enter the value to find the ancestors: ";
-    cin >> value;
-    cout << "The ancestors of " << value << " are: ";
-    Tree.ancestors(value);
-    cout << endl;
-
-    // LEVEL
-    cout << endl
-         << "Enter the value to find the level: ";
-    cin >> value;
-    cout << "The level of " << value << " is: " << Tree.Level(value) << endl;
-
-    // DELETE NODE
-    vector<int> toDelete = {16, 13, 47, 20};
-    int a;
-
-    for (int i = 0; i < toDelete.size(); i++)
+    //print the lines
+    for (int i = 0; i < lines.size(); i++)
     {
-        a = toDelete[i];
-        Tree.DeleteNode(a);
-        cout << endl;
-
-        Tree.BFT();
-        cout << "The height of the BST is: " << Tree.height() << endl;
+        cout << ipToInt(getIP(lines[i])) << endl;
     }
-    cout << endl;
 
     return 0;
 }
