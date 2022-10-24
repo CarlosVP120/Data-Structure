@@ -230,10 +230,10 @@ string getIP(string line)
 int main()
 {
     cout << "Act 3.4 - Comprehensive BST activity (competence evidence)" << endl;
-    cout << "- - - - - - - - - - - - -" << endl;
+
     cout << "Authors: \nCarlos Alberto Veryan Peña A01641147 \nDiego Partida Romero A01641113" << endl;
     cout << "\nDate: 24/10/2022" << endl;
-    cout << "- - - - - - - - - - - - -" << endl;
+
     BST Tree;
 
     ifstream file("Bitacora.txt");
