@@ -25,14 +25,14 @@ private:
     Node *Root;
 
     void Insert(long long &, Node *&);     // O(log n)
-    void InOrder(Node *);            // O(n)
+    void InOrder(Node *, ofstream &);            // O(n)
     void PreOrder(Node *);           // O(n)
     void PostOrder(Node *);          // O(n)
     void LevelByLevel(Node *);       // O(n)
     void DeleteNode(int &, Node *&); // O(log n)
     int height(Node *);              // O(n)
     void ancestors(Node *, int);     // O(log n)
-    int Level(Node *, int);          // O(n)
+    int Level(Node *, int);     // O(log n) 
 
 public:
     BST() : Root(NULL){};
@@ -45,7 +45,7 @@ public:
     }
     // insert long long
     void Insert(long long &value) {Insert(value, Root); } // Insert a node in the BST O(log n)
-    void InOrder() { InOrder(Root); }                // Display the BST in InOrder O(n)
+    void InOrder(ofstream &out) { InOrder(Root, out); }   // InOrder traversal O(n)
     void PreOrder() { PreOrder(Root); }              // Display the BST in PreOrder O(n)
     void PostOrder() { PostOrder(Root); }            // Display the BST in PostOrder O(n)
     void LevelByLevel() { LevelByLevel(Root); }      // Display the BST in LevelByLevel O(n)
@@ -129,15 +129,16 @@ void BST::PreOrder(Node *root)
  3. We print the data of the root node.
  4. We call the InOrder function recursively for the right subtree.*/
 
-void BST::InOrder(Node *root)
+// InOrder that adds the elements to a new file
+void BST::InOrder(Node *root, ofstream &file)
 {
     if (root == NULL)
     {
         return;
     }
-    InOrder(root->left);
-    cout << root->data << " ";
-    InOrder(root->right);
+    InOrder(root->left, file);
+    file << root->data << endl;
+    InOrder(root->right, file);
 }
 
 /* Here is the explanation for the code above:
@@ -157,6 +158,8 @@ void BST::PostOrder(Node *root)
     PostOrder(root->right);
     cout << root->data << " ";
 }
+
+
 
 /* 1. The function starts with the declaration of a queue of Node pointers named Q.  Q is a queue of Nodes, and each Node pointer will point to the address of a Node in the binary search tree.
 2.  If the root is NULL, the function returns.  Otherwise, the root is pushed onto the queue.
@@ -326,7 +329,7 @@ void BST::DeleteBST(Node *&root)
 {
     if (root != NULL)
     {
-        cout << "Deleting " << root->data << endl;
+        // cout << "Deleting " << root->data << endl;
         DeleteBST(root->left);
         DeleteBST(root->right);
         delete root;
@@ -342,33 +345,6 @@ void BST::DeleteBST(Node *&root)
 6. If the option is 4, then the LevelByLevel function is called.
 7. If the option is not 1, 2, 3, or 4, then the option is invalid and the user is informed.*/
 
-void BST::visit(int value)
-{
-    if (value == 1)
-    {
-        cout << "PreOrder: ";
-        PreOrder(Root);
-    }
-    else if (value == 2)
-    {
-        cout << "InOrder: ";
-        InOrder(Root);
-    }
-    else if (value == 3)
-    {
-        cout << "PostOrder: ";
-        PostOrder(Root);
-    }
-    else if (value == 4)
-    {
-        cout << "LevelByLevel: ";
-        LevelByLevel(Root);
-    }
-    else
-    {
-        cout << "Invalid option" << endl;
-    }
-}
 
 /*1. If the root is NULL, then the value is not present in the tree and return 0.
 2. If the root's data is equal to the value, then return 1.
@@ -433,6 +409,8 @@ void BST::ancestors(Node *root, int value)
         ancestors(root->right, value);
     }
 }
+
+
 
 long long ipToInt(string ip)
 { // O(n)
@@ -515,7 +493,6 @@ int main()
 {
     BST Tree;
 
-    // Save all the lines in a vector
     ifstream file("Bitacora.txt");
     string line;
     vector<string> lines;
@@ -525,24 +502,15 @@ int main()
         {
             line.insert(4, "0");
         }
-        lines.push_back(line);
+        string ip = getIP(line);
+        long long ipInt = ipToInt(ip);
+        Tree.Insert(ipInt);
     }
     file.close();
 
-    // Save the IPs in the tree
-    for (int i = 0; i < lines.size(); i++)
-    {
-        string ip = getIP(lines[i]);
-        long long ipInt = ipToInt(ip);
-        cout << ipInt << endl;
-        Tree.Insert(ipInt);
-    }
-
-    //print the lines
-    for (int i = 0; i < lines.size(); i++)
-    {
-        cout << ipToInt(getIP(lines[i])) << endl;
-    }
+    // Save the tree in a file
+    ofstream file2("Tree.txt");
+    Tree.InOrder(file2);
 
     return 0;
 }
