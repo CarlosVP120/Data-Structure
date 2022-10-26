@@ -10,6 +10,8 @@ int main()
   string email, contra;
   Usuario usuario;
 
+  
+
   // PRODUCTOS
   Producto* objs= new Producto[10];
   Producto Carrito[10];
