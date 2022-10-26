@@ -11,8 +11,6 @@ int main()
   string email, contra;
   Usuario usuario;
 
-  
-
   // PRODUCTOS
   Producto* objs= new Producto[10];
   Producto Carrito[10];
@@ -59,16 +57,16 @@ int main()
   }
 
   // PRODCUTOS
-  objs[0] = Producto("iPhone 13 Pro Max",29500);
-  objs[1] = Producto("Sistema de sonido Bose",10999);
-  objs[2] = Producto("Beats Solo3 Wireless",3649);
-  objs[3] = Producto("MacBook Pro 13'",49859);
-  objs[4] = Producto("Lapiz interactivo",900);
-  objs[5] = Producto("Television 5K",35999);
-  objs[6] = Producto("Camara HD",10000);
-  objs[7] = Producto("Xbox Series X",7500);
-  objs[8] = Producto("iPad Pro 13'",3599);
-  objs[9] = Producto("Impresora Epson L375",3599);
+  objs[0] = Producto("iPhone 13 Pro Max",29500, 100);
+  objs[1] = Producto("Sistema de sonido Bose",10999, 200);
+  objs[2] = Producto("Beats Solo3 Wireless",3649, 400);
+  objs[3] = Producto("MacBook Pro 13'",49859, 500);
+  objs[4] = Producto("Lapiz interactivo",900, 20);
+  objs[5] = Producto("Television 5K",35999, 300);
+  objs[6] = Producto("Camara HD",10000, 310);
+  objs[7] = Producto("Xbox Series X",7500, 300);
+  objs[8] = Producto("iPad Pro 13'",3599, 304);
+  objs[9] = Producto("Impresora Epson L375",3599, 700);
   
   do {
 		cout << "\n- - - - - - - - - - - - -" << endl;

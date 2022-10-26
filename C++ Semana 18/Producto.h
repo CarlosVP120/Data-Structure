@@ -8,7 +8,7 @@ class Producto
 public:
     // Los constructores nos permite inicializar los productos
     Producto();        //Constructor por default
-    Producto(std::string, float);  //Constructor por parámetro
+    Producto(std::string, float, int);  //Constructor por parámetro
     
 		int getNumProducto() const;
     std::string getNombreProducto() const; 

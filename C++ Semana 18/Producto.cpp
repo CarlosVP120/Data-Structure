@@ -9,17 +9,17 @@ Producto::Producto()
   numProducto = rand() % 200 + 100;
   nombreProducto = "Producto";
   existencia = 0;
-	costoProducto = 0; 
+  costoProducto = 0; 
   gananciaProducto = 0;
 }
 
-Producto::Producto(std::string _nombreProducto, float _costoProducto)
+Producto::Producto(std::string _nombreProducto, float _costoProducto, int _exstencia)
 {
   numProducto = rand() % 9000 + 1000;
   nombreProducto = _nombreProducto;
-  existencia = rand() % 100 + 1;
-	costoProducto = _costoProducto; 
+  costoProducto = _costoProducto; 
   gananciaProducto = _costoProducto * 0.1;
+  existencia = _exstencia;
 }
 
 // Getters
