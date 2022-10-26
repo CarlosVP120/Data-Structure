@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include "Informacion.h"
 using namespace std;
 
