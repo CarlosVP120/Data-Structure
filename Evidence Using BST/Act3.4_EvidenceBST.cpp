@@ -30,10 +30,10 @@ class BST
 private:
     Node *Root;
 
-    void Insert(long long &, Node *&); // O(log n)
-    void InOrder(Node *, ofstream &);  // O(n)
-    void DeleteNode(int &, Node *&);   // O(log n)
-    void countRepeated(Node *);        // O(n)
+    void Insert(long long &, Node *&);                               // O(log n)
+    void InOrder(Node *, ofstream &);                                // O(n)
+    void DeleteNode(int &, Node *&);                                 // O(log n)
+    void CountRepeated(Node *&, vector<long long> &, vector<int> &); // O(n)
 
 public:
     BST() : Root(NULL){};
@@ -45,11 +45,11 @@ public:
         cout << "\nDestructor: BST deleted\n";
     }
 
-    void Insert(long long &value) { Insert(value, Root); }   // Insert a node in the BST O(log n)
-    void InOrder(ofstream &out) { InOrder(Root, out); }      // InOrder traversal O(n)
-    void DeleteNode(int &value) { DeleteNode(value, Root); } // Delete a node from BST // O(log n)
-    void DeleteBST(Node *&);                                 // Delete the BST // O(n)
-    void countRepeated() { countRepeated(Root); }            // Count repeated values // O(n)
+    void Insert(long long &value) { Insert(value, Root); }                                                      // Insert a node in the BST O(log n)
+    void InOrder(ofstream &out) { InOrder(Root, out); }                                                         // InOrder traversal O(n)
+    void DeleteNode(int &value) { DeleteNode(value, Root); }                                                    // Delete a node from BST // O(log n)
+    void DeleteBST(Node *&);                                                                                    // Delete the BST // O(n)
+    void CountRepeated(vector<long long> &values, vector<int> &counts) { CountRepeated(Root, values, counts); } // O(n)
 };
 
 void BST::Insert(long long &value, Node *&root)
@@ -101,27 +101,17 @@ string intToIP(long long ip)
     return finalIP;
 }
 
-void BST::countRepeated(Node *node)
-{
-    if (node == NULL)
-        return;
-
-    countRepeated(node->left);
-    countRepeated(node->right);
-
-    if (node->left != NULL && node->left->data == node->data)
+void BST::CountRepeated(Node *&root, vector<long long> &iplist, vector<int> &countlist)
+{ // O(n)
+    if (root != NULL)
     {
-        node->count += node->left->count;
-    }
-    if (node->right != NULL && node->right->data == node->data)
-    {
-        node->count += node->right->count;
-    }
-
-    // Return the 5 most repeated values
-    if (node->count > 1)
-    {
-        cout << intToIP(node->data) << " " << node->count << endl;
+        CountRepeated(root->left, iplist, countlist);
+        if (root->count > 1)
+        {
+            iplist.push_back(root->data);
+            countlist.push_back(root->count);
+        }
+        CountRepeated(root->right, iplist, countlist);
     }
 }
 
@@ -251,13 +241,31 @@ int main()
     }
     file.close();
 
-    // Save the tree in a file
-    // ofstream file2("OrderedTree.txt");
-    // Tree.InOrder(file2);
+    vector<long long> iplist;
+    vector<int> countlist;
+    Tree.CountRepeated(iplist, countlist);
 
-    // file2.close();
+    for (int i = 0; i < countlist.size(); i++)
+    {
+        for (int j = i + 1; j < countlist.size(); j++)
+        {
+            if (countlist[i] < countlist[j])
+            {
+                int temp = countlist[i];
+                countlist[i] = countlist[j];
+                countlist[j] = temp;
 
-    Tree.countRepeated();
+                long long temp2 = iplist[i];
+                iplist[i] = iplist[j];
+                iplist[j] = temp2;
+            }
+        }
+    }
+
+    for (int i = 0; i < iplist.size(); i++)
+    {
+        cout << intToIP(iplist[i]) << " " << countlist[i] << endl;
+    }
 
     return 0;
 }
