@@ -83,14 +83,13 @@ string intToIP(long long ip)
     string iPstr = to_string(ip);
     string finalIP = "";
     int count = 0;
-    int flag = 0;
-    for (int i = 0; i < iPstr.length(); i++)
+    for (int i = 0; i < iPstr.length()+1; i++)
     { // O(n)
-        if (count == 2 && flag < 1)
+        if (count == 1 || count == 3 || count == 6)
         {
+            finalIP += iPstr[i];
             finalIP += ".";
-            flag++;
-            count = 0;
+            count ++;
         } 
         else
         {
@@ -267,7 +266,7 @@ int main()
         }
     }
 
-    for (int i = 0; i < iplist.size(); i++)
+    for (int i = 0; i < 5; i++)
     {
         cout << intToIP(iplist[i]) << " " << countlist[i] << endl;
     }
