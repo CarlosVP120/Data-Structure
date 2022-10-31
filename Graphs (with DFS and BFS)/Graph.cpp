@@ -3,17 +3,6 @@
 
 using namespace std;
 
-// struct Node
-// {
-//     int vertex;
-//     struct Node *next;
-// };
-
-// struct Graph
-// {
-//     int numVertices;
-//     struct Node **adjLists;
-// };
 
 class Graph
 {
@@ -40,6 +29,7 @@ public:
     void ResetVisited();
 
     void DFS(int);
+    void BFS(int);
 };
 
 void Graph::addEdge(int s, int d)
@@ -73,6 +63,27 @@ void Graph::DFS(int vertex)
     for (auto x : this->adjLists[vertex])
         if (!this->visited[x])
             DFS(x);
+}
+
+void Graph::BFS(int vertex)
+{
+    list<int> queue;
+    this->visited[vertex] = true;
+    queue.push_back(vertex);
+
+    while (!queue.empty())
+    {
+        vertex = queue.front();
+        cout << vertex << " ";
+        queue.pop_front();
+
+        for (auto x : this->adjLists[vertex])
+            if (!this->visited[x])
+            {
+                this->visited[x] = true;
+                queue.push_back(x);
+            }
+    }
 }
 
 int main()

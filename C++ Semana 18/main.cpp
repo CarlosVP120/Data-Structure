@@ -85,7 +85,6 @@ int main()
 					cout << "Producto: " << objs[i].getNombreProducto() << endl;
 					cout << "Precio: $"<< objs[i].getCostoProducto() << endl;
 					cout << "ID: " << objs[i].getNumProducto() << endl;
-          
         }
       break;
    

@@ -245,6 +245,11 @@ int main()
         {
             line.insert(4, "0");
         }
+        if (line[7] >= '0' && line[7] <= '9' && line[7] <= '9')
+        {
+            line.insert(7, "0");
+        }
+        cout << line << endl;
         string ip = getIP(line);
         long long ipInt = ipToInt(ip);
         Tree.Insert(ipInt);
