@@ -216,6 +216,65 @@ string getIP(string line)
     return iPs[0] + "." + iPs[1] + "." + iPs[2] + "." + iPs[3];
 }
 
+vector<string> merge(vector<string> left, vector<string> right)
+{ // O(n)
+    vector<string> result;
+    while (left.size() > 0 || right.size() > 0)
+    {
+        if (left.size() > 0 && right.size() > 0)
+        {
+            if (ipToInt(getIP(left.front())) <= ipToInt(getIP(right.front())))
+            {
+                result.push_back(left.front());
+                left.erase(left.begin());
+            }
+            else
+            {
+                result.push_back(right.front());
+                right.erase(right.begin());
+            }
+        }
+        else if (left.size() > 0)
+        {
+            for (int i = 0; i < left.size(); i++)
+            {
+                result.push_back(left[i]);
+            }
+            break;
+        }
+        else if (right.size() > 0)
+        {
+            for (int i = 0; i < right.size(); i++)
+            {
+                result.push_back(right[i]);
+            }
+            break;
+        }
+    }
+    return result;
+}
+
+vector<string> mergeSort(vector<string> array)
+{ // O(n)
+    if (array.size() == 1)
+    {
+        return array;
+    }
+    vector<string> left;
+    vector<string> right;
+    for (int i = 0; i < array.size() / 2; i++)
+    {
+        left.push_back(array[i]);
+    }
+    for (int i = array.size() / 2; i < array.size(); i++)
+    {
+        right.push_back(array[i]);
+    }
+    left = mergeSort(left);
+    right = mergeSort(right);
+    return merge(left, right);
+}
+
 // MAIN
 int main()
 {
@@ -239,11 +298,29 @@ int main()
         {
             line.insert(7, "0");
         }
-        string ip = getIP(line);
+        lines.push_back(line);
+    }
+    file.close();
+
+    vector<string> sortedLines;
+
+    // Sort the lines with merge sort
+    sortedLines = mergeSort(lines);
+
+    // Save the sorted lines in a new file
+    ofstream newFile1("Sorted.txt");
+    for (int i = 0; i < sortedLines.size(); i++)
+    {
+        newFile1 << sortedLines[i] << endl;
+    }
+    newFile1.close();
+
+    for (int i = 0; i < sortedLines.size(); i++)
+    {
+        string ip = getIP(sortedLines[i]);
         long long ipInt = ipToInt(ip);
         Tree.Insert(ipInt);
     }
-    file.close();
 
     vector<long long> iplist;
     vector<int> countlist;
@@ -268,7 +345,8 @@ int main()
 
     for (int i = 0; i < 5; i++)
     {
-        cout << intToIP(iplist[i]) << " " << countlist[i] << endl;
+
+        cout << intToIP(iplist[i]) << " is repeated: " << countlist[i] << " times" << endl;
     }
 
     return 0;
