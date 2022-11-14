@@ -34,9 +34,6 @@ public:
     void printAdjListInFile(); // function to print the graph O(V^2)
     void ResetVisited(); // function to reset the visited array O(V)
 
-    void DFS(int); // function to perform DFS O(V+E)
-    void BFS(int); // function to perform BFS O(V+E)
-
     vector<vector<int>> getAdjLists(); // function to get the adjLists O(1)
     // void findInOutDegree(); // function to find the in and out degree of a vertex O(V)
 };
@@ -83,16 +80,6 @@ void Graph::ResetVisited()
 {
     for (int i = 0; i < this->numVertices; i++)
         this->visited[i] = false;
-}
-
-void Graph::DFS(int vertex)
-{
-    this->visited[vertex] = true;
-    cout << vertex << " ";
-
-    for (auto x : this->adjLists[vertex])
-        if (!this->visited[x])
-            DFS(x);
 }
 
 vector<vector<int>> Graph::getAdjLists()
@@ -425,6 +412,13 @@ void findInOutDegree(vector<vector<int>> adjlist, int n)
 
 int main()
 {
+    cout << "\nDate: 13 / 11 / 2022" << endl;
+    cout << "Carlos Alberto Veryan Peña A01641147\nDiego Partida Romero A01641113" << endl;
+    cout << "------------------------------------------------------------" << endl;
+    cout << "Act 4.3 - Comprehensive Graph Activity (Competence evidence)" << endl;
+    cout << "------------------------------------------------------------" << endl;
+
+
     ifstream file("bitacora.txt");
     string line;
     vector<string> lines;
