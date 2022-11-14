@@ -3,6 +3,7 @@
 
 using namespace std;
 
+// Carlos Alberto Veryan Peña A01641147
 
 class Graph
 {
@@ -22,23 +23,32 @@ public:
     ~Graph()
     {
         delete[] adjLists;
+        delete[] visited;
     }
 
-    void addEdge(int, int);
-    void printGraph();
-    void ResetVisited();
+    void loadGraph(int, int); // function to load the graph O(V^2)
+    void printAdjList(); // function to print the graph O(V^2)
+    void ResetVisited(); // function to reset the visited array O(V)
 
-    void DFS(int);
-    void BFS(int);
+    void DFS(int); // function to perform DFS O(V+E)
+    void BFS(int); // function to perform BFS O(V+E)
+
+    void printGraph(); // function to print the graph O(V^2)
 };
 
-void Graph::addEdge(int s, int d)
+void Graph::printGraph()
 {
-    this->adjLists[s].push_back(d);
-    this->adjLists[d].push_back(s);
+    cout << endl << "Adjacency List:" << endl;
+    this->printAdjList();
+        
 }
 
-void Graph::printGraph()
+void Graph::loadGraph(int s, int d)
+{
+    this->adjLists[s].push_back(d);
+}
+
+void Graph::printAdjList()
 {
     for (int i = 0; i < this->numVertices; i++) 
     {
@@ -88,17 +98,35 @@ void Graph::BFS(int vertex)
 
 int main()
 {
-    Graph g(5);
-    g.addEdge(0, 1);
-    g.addEdge(0, 2);
-    g.addEdge(0, 3);
-    g.addEdge(1, 2);
-    g.addEdge(2, 4);
+    Graph g(7);
+    g.loadGraph(0, 1);
+    g.loadGraph(0, 2);
+    g.loadGraph(0, 3);
+    g.loadGraph(1, 2);
+    g.loadGraph(1, 5);
+    g.loadGraph(2, 4);
+    g.loadGraph(2, 3);
+    g.loadGraph(3, 2);
+    g.loadGraph(4, 1);
+    g.loadGraph(4, 2);
+    g.loadGraph(5, 3);
+    g.loadGraph(5, 2);
+    g.loadGraph(5, 4);
+    g.loadGraph(6, 5);
+    g.loadGraph(6, 3);
+    g.loadGraph(6, 6);
+    g.loadGraph(6, 1);
 
     g.printGraph();
+    cout << endl;
 
-    cout << "\nDFS: ";
+    cout << "DFS: ";
     g.DFS(0);
+
+    cout << endl << "BFS: ";
+    g.ResetVisited();
+    g.BFS(0);
+    cout << endl;
 
     return 0;
 }
