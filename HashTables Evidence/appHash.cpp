@@ -8,110 +8,197 @@
 
 using namespace std;
 
+// Hash Table of strings
 class HashTable
 {
 private:
-    int capacity;
-    list<int> *table;
+    // Hash table
+    list<string> *table;
+    // Number of buckets
+    int buckets;
 
 public:
-    HashTable(int V)
+    // Constructor
+    HashTable(int b)
     {
-        int size = getPrime(V);
-        this->capacity = size;
-        table = new list<int>[capacity];
+        buckets = b;
+        table = new list<string>[buckets];
     }
 
-    ~HashTable()
+    // Hash function
+    int hashFunction(string key)
     {
-        delete[] table;
-        cout << "\nDestructor: HashTable deleted. " << endl;
+        int sum = 0;
+        for (int i = 0; i < key.length(); i++)
+        {
+            sum += key[i];
+        }
+        return sum % buckets;
     }
 
-    bool checkPrime(int); // O(sqrt(n))
-    int getPrime(int);   // O(sqrt(n))
-    void deleteItem(int); // O(1 + alpha)
-    int hashFunction(int); // O(1 + alpha)
-    void displayHash(); // O(n)
-    void clearHash(); // O(n)
+    // Insert key into hash table
+    void insertItem(string key)
+    {
+        int index = hashFunction(key);
+        table[index].push_back(key);
+    }
 
-    void quadratic(int); // O(1 + alpha)
-    void chain(int); // O(1 + alpha)
+    // Search
+    bool searchItem(string key)
+    {
+        int index = hashFunction(key);
+        for (auto x : table[index])
+        {
+            if (x == key)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Delete
+    void deleteItem(string key)
+    {
+        int index = hashFunction(key);
+        list<string>::iterator i;
+        for (i = table[index].begin(); i != table[index].end(); i++)
+        {
+            if (*i == key)
+            {
+                break;
+            }
+        }
+        if (i != table[index].end())
+        {
+            table[index].erase(i);
+        }
+    }
+
+    // Print
+    void printTable()
+    {
+        for (int i = 0; i < buckets; i++)
+        {
+            cout << i;
+            for (auto x : table[i])
+            {
+                cout << " --> " << x;
+            }
+            cout << endl;
+        }
+    }
+
+    // Getters
+    int getBuckets()
+    {
+        return buckets;
+    }
+
+    list<string> *getTable()
+    {
+        return table;
+    }
 };
 
-bool HashTable::checkPrime(int n) 
-{
-    if (n == 1 || n == 0)
-        return false;
-
-    int sqr_root = sqrt(n);
-    for (int i = 2; i <= sqr_root; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-} // O(sqrt(n))
-
-int HashTable::getPrime(int n)
-{
-    if (n % 2 == 0)
-        n++;
-    while (!checkPrime(n))
-        n += 2;
-    return n;
-} // O(sqrt(n))
-
-int HashTable::hashFunction(int key)
-{
-    return key % this->capacity;
-} // O(1 + alpha)
-
-void HashTable::deleteItem(int key)
-{
-    int index = hashFunction(key);
-    table[index].remove(key);
-} // O(1 + alpha)
-
-void HashTable::displayHash()
-{
-    for (int i = 0; i < this->capacity; i++)
+long long ipToInt(string ip)
+{ // O(n)
+    string iPstr = "";
+    for (int i = 0; i < ip.length(); i++)
     {
-        cout << "table[" << i << "]";
-
-        for (auto x : table[i])
-            cout << " --> " << x;
-        cout << endl;
+        if (ip[i] == '.')
+        {
+            // Do nothing
+        }
+        else
+        {
+            iPstr += ip[i];
+        }
     }
-} // O(n)
+    return stoll(iPstr);
+}
 
-void HashTable::quadratic(int key)
-{
-    int index = hashFunction(key);
-    int i = 0;
-    while (table[index].size() != 0)
+string getIP(string line)
+{ // O(n)
+    string ip = "";
+    string finalIP = "";
+    for (int i = 16; i < line.length(); i++)
+    { // O(n)
+        if (line[i] == ':')
+        {
+            break;
+        }
+        ip += line[i];
+    }
+
+    // Divide the IP in 4 strings
+    string ip1 = "";
+    string ip2 = "";
+    string ip3 = "";
+    string ip4 = "";
+    int count = 0;
+    for (int i = 0; i < ip.length(); i++)
+    { // O(n)
+        if (ip[i] == '.')
+        {
+            count++;
+        }
+        else
+        {
+            if (count == 0)
+            {
+                ip1 += ip[i];
+            }
+            else if (count == 1)
+            {
+                ip2 += ip[i];
+            }
+            else if (count == 2)
+            {
+                ip3 += ip[i];
+            }
+            else if (count == 3)
+            {
+                ip4 += ip[i];
+            }
+        }
+    }
+
+    vector<string> iPs = {ip1, ip2, ip3, ip4};
+
+    for (int i = 0; i < iPs.size(); i++)
     {
-        index = (index + i * i) % this->capacity;
-        i++;
+        while (iPs[i].length() < 3)
+        {
+            iPs[i] = "0" + iPs[i];
+        }
     }
-    table[index].push_back(key);
-} // O(1 + alpha)
 
-void HashTable::chain(int key)
-{
-    int index = hashFunction(key);
-    int i = 0; 
-    while (table[index].size() != 0)
-    {
-        index = (index + 1) % this->capacity;
-        i++;
+    return iPs[0] + "." + iPs[1] + "." + iPs[2] + "." + iPs[3];
+}
+
+string intToIP(long long ip)
+{ // O(n)
+    string iPstr = to_string(ip);
+    string finalIP = "";
+    int count = 0;
+    for (int i = 0; i < iPstr.length()+1; i++)
+    { // O(n)
+        if (count == 1 || count == 3 || count == 6)
+        {
+            finalIP += iPstr[i];
+            finalIP += ".";
+            count ++;
+        } 
+        else
+        {
+            finalIP += iPstr[i];
+            count++;
+        }
     }
-    table[index].push_back(key);
-} // O(1 + alpha)
-
-void HashTable::clearHash()
-{
-    for (int i = 0; i < this->capacity; i++)
-        table[i].clear();
-} // O(n)
+    finalIP.pop_back();
+    return finalIP;
+}
 
 int main()
 {    
@@ -132,15 +219,26 @@ int main()
         }
     }
 
-    // save the lines in a new file
-    ofstream newFile("bitacora2.txt");
+    HashTable table(1000000);
     for (int i = 0; i < lines.size(); i++)
     {
-        newFile << lines[i] << endl;
+        table.insertItem(getIP(lines[i]));
     }
+    // print the hash table in a new file
+    ofstream newFile("bitacoraHash.txt");
+    for (int i = 0; i < table.getBuckets(); i++)
+    {
+        newFile << i;
+        for (auto x : table.getTable()[i])
+        {
+            newFile << " --> " << x;
+        }
+        newFile << endl;
+    }
+    newFile.close();
 
-    // We are going to organize the IP addresses, using a hash function to assign them a space in the hash table that contains the information of that IP address, the information (in the form of a node) that must be stored in that space is: the value of the IP itself , the number of accesses, a list with dates and times together (an array of strings containing the data as "Oct 9 10:32:24"), and a list of the numbers of ports (the value after the ":" of the IP address) that appear with that IP address.
-    
+
+
 
 
     return 0;
