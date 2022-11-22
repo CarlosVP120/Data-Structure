@@ -8,115 +8,121 @@
 
 using namespace std;
 
-// Hash Table of strings
 class HashTable
 {
 private:
-    // Hash table
-    list<string> *table;
-    // Number of buckets
-    int buckets;
+    // hash table of long long values
+    long long *table;
+    // capacity of the hash table
+    int capacity;
+    // number of elements in the hash table
+    int size;
 
 public:
-    // Constructor
-    HashTable(int b)
+    HashTable(int V)
     {
-        buckets = b;
-        table = new list<string>[buckets];
+        int size = getPrime(V);
+        this->capacity = size;
+        table = new long long[capacity];
+        this->size = 0;
     }
 
-    // Hash function
-    int hashFunction(string key)
+    ~HashTable()
     {
-        int sum = 0;
-        for (int i = 0; i < key.length(); i++)
-        {
-            sum += key[i];
-        }
-        return sum % buckets;
+        delete[] table;
+        cout << "\nDestructor: HashTable deleted. " << endl;
     }
 
-    // Insert key into hash table
-    void insertItem(string key)
-    {
-        int index = hashFunction(key);
-        table[index].push_back(key);
+    bool checkPrime(int); // O(sqrt(n))
+    int getPrime(int);   // O(sqrt(n))
+    void deleteItem(int); // O(1 + alpha)
+    int hashFunction(int); // O(1 + alpha)
+    void displayHash(); // O(n)
+    void clearHash(); // O(n)
+
+    void quadratic(int); // O(1 + alpha)
+    void chain(int); // O(1 + alpha)
+
+    long long *getTable() { 
+        return table; 
     }
 
-    // Search
-    bool searchItem(string key)
-    {
-        int index = hashFunction(key);
-        for (auto x : table[index])
-        {
-            if (x == key)
-            {
-                return true;
-            }
-        }
-        return false;
+    int getCapacity() { 
+        return capacity; 
     }
 
-    // Delete
-    void deleteItem(string key)
-    {
-        int index = hashFunction(key);
-        list<string>::iterator i;
-        for (i = table[index].begin(); i != table[index].end(); i++)
-        {
-            if (*i == key)
-            {
-                break;
-            }
-        }
-        if (i != table[index].end())
-        {
-            table[index].erase(i);
-        }
-    }
-
-    // Print
-    void printTable()
-    {
-        for (int i = 0; i < buckets; i++)
-        {
-            cout << i;
-            for (auto x : table[i])
-            {
-                cout << " --> " << x;
-            }
-            cout << endl;
-        }
-    }
-
-    // Getters
-    int getBuckets()
-    {
-        return buckets;
-    }
-
-    list<string> *getTable()
-    {
-        return table;
-    }
 };
 
-long long ipToInt(string ip)
-{ // O(n)
-    string iPstr = "";
-    for (int i = 0; i < ip.length(); i++)
+bool HashTable::checkPrime(int n) 
+{
+    if (n == 1 || n == 0)
+        return false;
+
+    int sqr_root = sqrt(n);
+    for (int i = 2; i <= sqr_root; i++)
+        if (n % i == 0)
+            return false;
+    return true;
+} // O(sqrt(n))
+
+int HashTable::getPrime(int n)
+{
+    if (n % 2 == 0)
+        n++;
+    while (!checkPrime(n))
+        n += 2;
+    return n;
+} // O(sqrt(n))
+
+void HashTable::deleteItem(int key)
+{
+    int index = hashFunction(key);
+    table[index] = 0;
+    size--;
+} // O(1 + alpha)
+
+int HashTable::hashFunction(int key)
+{
+    int index = key % capacity;
+    return index;
+} // O(1 + alpha)
+
+void HashTable::displayHash()
+{
+    for (int i = 0; i < capacity; i++)
     {
-        if (ip[i] == '.')
-        {
-            // Do nothing
-        }
+        if (table[i] != 0)
+            cout << i << " --> " << table[i] << endl;
         else
-        {
-            iPstr += ip[i];
-        }
+            cout << i << endl;
     }
-    return stoll(iPstr);
-}
+} // O(n)
+
+void HashTable::clearHash()
+{
+    for (int i = 0; i < capacity; i++)
+        table[i] = 0;
+} // O(n)
+
+void HashTable::quadratic(int key)
+{
+    int index = hashFunction(key);
+    int i = 1;
+    while (table[index] != 0)
+    {
+        index = (index + i * i) % capacity;
+        i++;
+    }
+    table[index] = key;
+    size++;
+} // O(1 + alpha)
+
+void HashTable::chain(int key)
+{
+    int index = hashFunction(key);
+    table[index] = key;
+    size++;
+} // O(1 + alpha)
 
 string getIP(string line)
 { // O(n)
@@ -166,12 +172,33 @@ string getIP(string line)
 
     vector<string> iPs = {ip1, ip2, ip3, ip4};
 
-    for (int i = 0; i < iPs.size(); i++)
+    // normalize the iPs[0] to 3 digits
+    if (iPs[0].length() == 1)
     {
-        while (iPs[i].length() < 3)
-        {
-            iPs[i] = "0" + iPs[i];
-        }
+        iPs[0] = "00" + iPs[0];
+    }
+    else if (iPs[0].length() == 2)
+    {
+        iPs[0] = "0" + iPs[0];
+    }
+
+    if (iPs[1].length() == 1)
+    {
+        iPs[1] = "0" + iPs[1];
+    }
+
+    if (iPs[2].length() == 1)
+    {
+        iPs[2] = "00" + iPs[2];
+    }
+    else if (iPs[2].length() == 2)
+    {
+        iPs[2] = "0" + iPs[2];
+    }
+
+    if (iPs[3].length() == 1)
+    {
+        iPs[3] = "0" + iPs[3];
     }
 
     return iPs[0] + "." + iPs[1] + "." + iPs[2] + "." + iPs[3];
@@ -184,7 +211,7 @@ string intToIP(long long ip)
     int count = 0;
     for (int i = 0; i < iPstr.length()+1; i++)
     { // O(n)
-        if (count == 1 || count == 3 || count == 6)
+        if (count == 2 || count == 4 || count == 7)
         {
             finalIP += iPstr[i];
             finalIP += ".";
@@ -198,6 +225,24 @@ string intToIP(long long ip)
     }
     finalIP.pop_back();
     return finalIP;
+}
+
+long long ipToInt(string ip)
+{ // O(n)
+    string iPstr = "";
+    for (int i = 0; i < ip.length(); i++)
+    {
+        if (ip[i] == '.')
+        {
+            // Do nothing
+        }
+        else
+        {
+            iPstr += ip[i];
+        }
+    }
+    // cout << stoll(iPstr) << endl;
+    return stoll(iPstr);
 }
 
 int main()
@@ -219,27 +264,28 @@ int main()
         }
     }
 
-    HashTable table(1000000);
+    // add the IP of each line to the hash table
+    HashTable hashTable(lines.size());
     for (int i = 0; i < lines.size(); i++)
     {
-        table.insertItem(getIP(lines[i]));
+        string ip = getIP(lines[15]);
+        long long ipInt = ipToInt(ip);
+        hashTable.quadratic(ipInt);
+        cout << ip << endl;
+        cout << ipInt << endl;
+        cout << intToIP(ipInt) << endl;
     }
-    // print the hash table in a new file
-    ofstream newFile("bitacoraHash.txt");
-    for (int i = 0; i < table.getBuckets(); i++)
-    {
-        newFile << i;
-        for (auto x : table.getTable()[i])
-        {
-            newFile << " --> " << x;
-        }
-        newFile << endl;
-    }
-    newFile.close();
 
-
-
-
-
-    return 0;
+    // // print the hash table in a new file
+    // ofstream newFile("bitacora2.txt");
+    // for (int i = 0; i < lines.size(); i++)
+    // {
+    //     string ip = getIP(lines[i]);
+    //     long long ipInt = ipToInt(ip);
+    //     newFile << intToIP(ipInt) << endl;
+    // }
+    // newFile.close();
 }
+
+
+
