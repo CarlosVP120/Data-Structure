@@ -2,6 +2,7 @@
 #include <list>
 #include <math.h>
 #include <vector>
+#include <fstream>
 
 // Carlos Alberto Veryan Peña A01641147
 
@@ -114,36 +115,33 @@ void HashTable::clearHash()
 
 int main()
 {    
-    int test1[]  = {76, 85, 92, 50, 700, 73, 101};
-    int test2[]  = {231, 321, 212, 321, 433, 262, 210};
-    int test3[]  = {77, 94, 89, 17, 45, 35, 76};
-    int test4[]  = {91,22,93,40,47,76,10};
-
-    int *tests[] = {test1, test2, test3, test4};
-    int sizes[]  = {sizeof(test1)/sizeof(test1[0]), sizeof(test2)/sizeof(test2[0]), sizeof(test3)/sizeof(test3[0]), sizeof(test4)/sizeof(test4[0])};
-
-    for (int i = 0; i < 4; i++)
+    ifstream file("bitacora.txt");
+    string line;
+    vector<string> lines;
+    while (getline(file, line))
     {
-        cout << "\nTEST CASE " << i + 1 <<": " << endl;
-        int n = sizes[i];
-        cout << "n = " << n << endl;
-        HashTable h(n);
-
-        for (int j = 0; j < n; j++)
-            h.quadratic(tests[i][j]);
-
-        cout << "\nQuadratic Probing: " << endl;
-        h.displayHash();
-
-        h.clearHash();
-
-        for (int j = 0; j < n; j++)
-            h.chain(tests[i][j]);
-
-        cout << "\nChain Probing: " << endl;
-        h.displayHash();
-
-        h.clearHash();
+        lines.push_back(line);
     }
+    file.close();
+
+    for (int i = 0; i < lines.size(); i++)
+    {
+        if (lines[i][4] >= '0' && lines[i][4] <= '9' && lines[i][5] == ' ')
+        {
+            lines[i].insert(4, "0");
+        }
+    }
+
+    // save the lines in a new file
+    ofstream newFile("bitacora2.txt");
+    for (int i = 0; i < lines.size(); i++)
+    {
+        newFile << lines[i] << endl;
+    }
+
+    // We are going to organize the IP addresses, using a hash function to assign them a space in the hash table that contains the information of that IP address, the information (in the form of a node) that must be stored in that space is: the value of the IP itself , the number of accesses, a list with dates and times together (an array of strings containing the data as "Oct 9 10:32:24"), and a list of the numbers of ports (the value after the ":" of the IP address) that appear with that IP address.
+    
+
+
     return 0;
 }
