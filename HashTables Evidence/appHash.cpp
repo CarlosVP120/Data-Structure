@@ -5,126 +5,168 @@
 #include <fstream>
 
 // Carlos Alberto Veryan Peña A01641147
+// Diego Partida Romero A01641113 
 
 using namespace std;
 
-class HashTable
-{
-private:
-    // hash table of long long values
-    long long *table;
-    // capacity of the hash table
-    int capacity;
-    // number of elements in the hash table
-    int size;
-
-public:
-    HashTable(int V)
-    {
-        int size = getPrime(V);
-        this->capacity = size;
-        table = new long long[capacity];
-        this->size = 0;
-    }
-
-    ~HashTable()
-    {
-        delete[] table;
-        cout << "\nDestructor: HashTable deleted. " << endl;
-    }
-
-    bool checkPrime(int); // O(sqrt(n))
-    int getPrime(int);   // O(sqrt(n))
-    void deleteItem(int); // O(1 + alpha)
-    int hashFunction(int); // O(1 + alpha)
-    void displayHash(); // O(n)
-    void clearHash(); // O(n)
-
-    void quadratic(int); // O(1 + alpha)
-    void chain(int); // O(1 + alpha)
-
-    long long *getTable() { 
-        return table; 
-    }
-
-    int getCapacity() { 
-        return capacity; 
-    }
-
+struct node {
+    string ip;
+    int numAccesses;
+    list <string> dateTime;
+    list <string> puertos;
 };
 
-bool HashTable::checkPrime(int n) 
-{
-    if (n == 1 || n == 0)
-        return false;
+class HashTable {
+    private:
+        vector <node> table;
+        int size;
+        int numElements;
+        int hash(string ip); // O(1 + alpha)
+        void rehash(); // O(n)
+    public:
+        HashTable(int size); // O(1)
+        void insertQProbe(string ip, string dateTime, string puerto); // O(1 + alpha)
+        void print(); // O(n)
+        void printToFile(); // O(n)
+        void search(string ip); // O(1 + alpha)
+};
 
-    int sqr_root = sqrt(n);
-    for (int i = 2; i <= sqr_root; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-} // O(sqrt(n))
+HashTable::HashTable(int size) {
+    this->size = size;
+    this->numElements = 0;
+    table.resize(size);
+} // O(1)
 
-int HashTable::getPrime(int n)
-{
-    if (n % 2 == 0)
-        n++;
-    while (!checkPrime(n))
-        n += 2;
-    return n;
-} // O(sqrt(n))
-
-void HashTable::deleteItem(int key)
-{
-    int index = hashFunction(key);
-    table[index] = 0;
-    size--;
+int HashTable::hash(string ip) {
+    int hash = 0;
+    for (int i = 0; i < ip.length(); i++) {
+        hash += (int)ip[i];
+    }
+    return hash % size;
 } // O(1 + alpha)
 
-int HashTable::hashFunction(int key)
-{
-    int index = key % capacity;
-    return index;
-} // O(1 + alpha)
-
-void HashTable::displayHash()
-{
-    for (int i = 0; i < capacity; i++)
-    {
-        if (table[i] != 0)
-            cout << i << " --> " << table[i] << endl;
-        else
-            cout << i << endl;
+void HashTable::rehash() {
+    vector <node> oldTable = table;
+    table.clear();
+    size = size * 2;
+    table.resize(size);
+    numElements = 0;
+    for (int i = 0; i < oldTable.size(); i++) {
+        if (oldTable[i].ip != "") {
+            insertQProbe(oldTable[i].ip, oldTable[i].dateTime.front(), oldTable[i].puertos.front());
+        }
     }
 } // O(n)
 
-void HashTable::clearHash()
-{
-    for (int i = 0; i < capacity; i++)
-        table[i] = 0;
-} // O(n)
-
-void HashTable::quadratic(int key)
-{
-    int index = hashFunction(key);
+void HashTable::insertQProbe(string ip, string dateTime, string puerto) {
+    int index = hash(ip);
     int i = 1;
-    while (table[index] != 0)
-    {
-        index = (index + i * i) % capacity;
+
+    // If the table at the calculated index is not empty, we use the quadratic probing method to find a new index for the IP address.
+    while (table[index].ip != "" && table[index].ip != ip) {
+        index = (index + i * i) % size;
         i++;
     }
-    table[index] = key;
-    size++;
+    if (table[index].ip == "") {
+        table[index].ip = ip;
+        table[index].numAccesses = 1;
+        table[index].dateTime.push_back(dateTime);
+        table[index].puertos.push_back(puerto);
+        numElements++;
+    } else {
+        table[index].numAccesses++;
+        table[index].dateTime.push_back(dateTime);
+        table[index].puertos.push_back(puerto);
+    }
 } // O(1 + alpha)
 
-void HashTable::chain(int key)
-{
-    int index = hashFunction(key);
-    table[index] = key;
-    size++;
+void HashTable::print() {
+    for (int i = 0; i < table.size(); i++) {
+        if (table[i].ip != "") {
+            cout << "IP: " << table[i].ip << endl;
+            cout << "Numero de accesos: " << table[i].numAccesses << endl;
+            cout << "Fecha y hora de los accesos: " << endl;
+            for (auto it = table[i].dateTime.begin(); it != table[i].dateTime.end(); it++) {
+                cout << *it << endl;
+            }
+            cout << "Puertos de los accesos: " << endl;
+            for (auto it = table[i].puertos.begin(); it != table[i].puertos.end(); it++) {
+                cout << *it << endl;
+            }
+            cout << endl;
+        }
+    }
+} // O(n)
+
+void HashTable::printToFile() {
+    ofstream file;
+    file.open("evidence.txt");
+    for (int i = 0; i < table.size(); i++) {
+        if (table[i].ip != "") {
+            file << "IP: " << table[i].ip << endl;
+            file << "Numero de accesos: " << table[i].numAccesses << endl;
+            file << "Fecha y hora de los accesos: " << endl;
+            for (auto it = table[i].dateTime.begin(); it != table[i].dateTime.end(); it++) {
+                file << *it << endl;
+            }
+            file << "Puertos de los accesos: " << endl;
+            for (auto it = table[i].puertos.begin(); it != table[i].puertos.end(); it++) {
+                file << *it << endl;
+            }
+            file << endl;
+        }
+    }
+    file.close();
+} // O(n)
+
+void HashTable::search(string ip) {
+    int index = hash(ip);
+    int i = 1;
+
+    // If the ip address is not there, then we will search for the next index using quadratic probing.
+    while (table[index].ip != "" && table[index].ip != ip) {
+        index = (index + i * i) % size;
+        i++;
+    }
+
+    if (table[index].ip == "") {
+        cout << "IP no encontrada" << endl;
+    } else {
+        cout << "IP: " << table[index].ip << endl;
+        cout << "Numero de accesos: " << table[index].numAccesses << endl;
+        cout << "Fecha y hora de los accesos: " << endl;
+        for (auto it = table[index].dateTime.begin(); it != table[index].dateTime.end(); it++) {
+            cout << *it << endl;
+        }
+        cout << "Puertos de los accesos: " << endl;
+        for (auto it = table[index].puertos.begin(); it != table[index].puertos.end(); it++) {
+            cout << *it << endl;
+        }
+        cout << endl;
+    }
+
+    // print the result in a new file
+    ofstream file;
+    file.open("SearchResult.txt");
+    if (table[index].ip == "") {
+        file << "IP no encontrada" << endl;
+    } else {
+        file << "IP: " << table[index].ip << endl;
+        file << "Numero de accesos: " << table[index].numAccesses << endl;
+        file << "Fecha y hora de los accesos: " << endl;
+        for (auto it = table[index].dateTime.begin(); it != table[index].dateTime.end(); it++) {
+            file << *it << endl;
+        }
+        file << "Puertos de los accesos: " << endl;
+        for (auto it = table[index].puertos.begin(); it != table[index].puertos.end(); it++) {
+            file << *it << endl;
+        }
+        file << endl;
+    }
+
 } // O(1 + alpha)
 
-string getIP(string line)
+string getIP(string line, bool normalize)
 { // O(n)
     string ip = "";
     string finalIP = "";
@@ -137,71 +179,74 @@ string getIP(string line)
         ip += line[i];
     }
 
-    // Divide the IP in 4 strings
-    string ip1 = "";
-    string ip2 = "";
-    string ip3 = "";
-    string ip4 = "";
-    int count = 0;
-    for (int i = 0; i < ip.length(); i++)
-    { // O(n)
-        if (ip[i] == '.')
-        {
-            count++;
+    if (normalize) {
+        string ip1 = "";
+        string ip2 = "";
+        string ip3 = "";
+        string ip4 = "";
+        int count = 0;
+        for (int i = 0; i < ip.length(); i++)
+        { // O(n)
+            if (ip[i] == '.')
+            {
+                count++;
+            }
+            else
+            {
+                if (count == 0)
+                {
+                    ip1 += ip[i];
+                }
+                else if (count == 1)
+                {
+                    ip2 += ip[i];
+                }
+                else if (count == 2)
+                {
+                    ip3 += ip[i];
+                }
+                else if (count == 3)
+                {
+                    ip4 += ip[i];
+                }
+            }
         }
-        else
+
+        vector<string> iPs = {ip1, ip2, ip3, ip4};
+
+        // normalize the iPs[0] to 3 digits
+        if (iPs[0].length() == 1)
         {
-            if (count == 0)
-            {
-                ip1 += ip[i];
-            }
-            else if (count == 1)
-            {
-                ip2 += ip[i];
-            }
-            else if (count == 2)
-            {
-                ip3 += ip[i];
-            }
-            else if (count == 3)
-            {
-                ip4 += ip[i];
-            }
+            iPs[0] = "00" + iPs[0];
         }
+        else if (iPs[0].length() == 2)
+        {
+            iPs[0] = "0" + iPs[0];
+        }
+
+        if (iPs[1].length() == 1)
+        {
+            iPs[1] = "0" + iPs[1];
+        }
+
+        if (iPs[2].length() == 1)
+        {
+            iPs[2] = "00" + iPs[2];
+        }
+        else if (iPs[2].length() == 2)
+        {
+            iPs[2] = "0" + iPs[2];
+        }
+
+        if (iPs[3].length() == 1)
+        {
+            iPs[3] = "0" + iPs[3];
+        }
+
+        return iPs[0] + "." + iPs[1] + "." + iPs[2] + "." + iPs[3];
     }
 
-    vector<string> iPs = {ip1, ip2, ip3, ip4};
-
-    // normalize the iPs[0] to 3 digits
-    if (iPs[0].length() == 1)
-    {
-        iPs[0] = "00" + iPs[0];
-    }
-    else if (iPs[0].length() == 2)
-    {
-        iPs[0] = "0" + iPs[0];
-    }
-
-    if (iPs[1].length() == 1)
-    {
-        iPs[1] = "0" + iPs[1];
-    }
-
-    if (iPs[2].length() == 1)
-    {
-        iPs[2] = "00" + iPs[2];
-    }
-    else if (iPs[2].length() == 2)
-    {
-        iPs[2] = "0" + iPs[2];
-    }
-
-    if (iPs[3].length() == 1)
-    {
-        iPs[3] = "0" + iPs[3];
-    }
-
-    return iPs[0] + "." + iPs[1] + "." + iPs[2] + "." + iPs[3];
+    return ip;
 }
 
 string intToIP(long long ip)
@@ -265,27 +310,33 @@ int main()
     }
 
     // add the IP of each line to the hash table
-    HashTable hashTable(lines.size());
-    for (int i = 0; i < lines.size(); i++)
-    {
-        string ip = getIP(lines[15]);
-        long long ipInt = ipToInt(ip);
-        hashTable.quadratic(ipInt);
-        cout << ip << endl;
-        cout << ipInt << endl;
-        cout << intToIP(ipInt) << endl;
+
+    // Why if i have 16807 it works, but if i have 16808 i get segmantation fault?
+    HashTable hashTable(lines.size()+1);
+    for (int i = 0; i < lines.size(); i++) {
+        string ip = getIP(lines[i], false);
+        string dateTime = lines[i].substr(0, 15);
+        string puerto = "";
+
+        if (ip.length() == 10) {
+            puerto = lines[i].substr(27, 5);
+        } else if (ip.length() == 11) {
+            puerto = lines[i].substr(28, 5);
+        } else if (ip.length() == 12) {
+            puerto = lines[i].substr(29, 5);
+        } else if (ip.length() == 13) {
+            puerto = lines[i].substr(30, 5);
+        } else {
+            // Do nothing
+        }
+        hashTable.insertQProbe(ip, dateTime, puerto);
     }
+    hashTable.printToFile();
 
-    // // print the hash table in a new file
-    // ofstream newFile("bitacora2.txt");
-    // for (int i = 0; i < lines.size(); i++)
-    // {
-    //     string ip = getIP(lines[i]);
-    //     long long ipInt = ipToInt(ip);
-    //     newFile << intToIP(ipInt) << endl;
-    // }
-    // newFile.close();
+    // search for an IP
+    string ip;
+    cout << "\nIngrese la IP que desea buscar: ";
+    cin >> ip;
+    cout << endl;
+    hashTable.search(ip);
 }
-
-
-
